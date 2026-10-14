@@ -5,6 +5,12 @@
  "start_url": "./",
  "scope": "./",
  "description": "Type anything about your life. LifeOS sorts it, dates it and reminds you.",
+ "related_applications": [
+  {
+   "platform": "webapp",
+   "url": "https://novashiv11.github.io/lifeos/manifest.json"
+  }
+ ],
  "display": "standalone",
  "orientation": "portrait",
  "background_color": "#eef2ee",
