@@ -1,7 +1,7 @@
 {
  "name": "LifeOS",
  "short_name": "LifeOS",
- "id": "./",
+ "id": "/lifeos/",
  "start_url": "./",
  "scope": "./",
  "description": "Type anything about your life. LifeOS sorts it, dates it and reminds you.",
