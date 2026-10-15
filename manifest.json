@@ -34,8 +34,8 @@
  ],
  "display": "standalone",
  "orientation": "portrait",
- "background_color": "#eef2ee",
- "theme_color": "#0d6b58",
+ "background_color": "#0b0f0d",
+ "theme_color": "#0b0f0d",
  "icons": [
   {
    "src": "icon-192.png",
