@@ -11,6 +11,27 @@
    "url": "https://novashiv11.github.io/lifeos/manifest.json"
   }
  ],
+ "categories": [
+  "productivity",
+  "lifestyle",
+  "health"
+ ],
+ "screenshots": [
+  {
+   "src": "screens/today.png",
+   "sizes": "780x1800",
+   "type": "image/png",
+   "form_factor": "narrow",
+   "label": "Today: brief, renewals and guides"
+  },
+  {
+   "src": "screens/food.png",
+   "sizes": "780x1688",
+   "type": "image/png",
+   "form_factor": "narrow",
+   "label": "Scan food, track calories"
+  }
+ ],
  "display": "standalone",
  "orientation": "portrait",
  "background_color": "#eef2ee",
