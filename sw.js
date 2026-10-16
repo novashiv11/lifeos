@@ -1,5 +1,5 @@
 /* LifeOS service worker: offline app shell + daily due reminders (Periodic Background Sync, Chrome/Android). */
-const CACHE = "lifeos-2e62387259";
+const CACHE = "lifeos-dac23c1b43";
 const SHELL = ["./", "index.html", "pwa.js", "manifest.json", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
