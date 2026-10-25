@@ -56,6 +56,11 @@
    "name": "Money",
    "short_name": "Money",
    "url": "./?v=finance"
+  },
+  {
+   "name": "Jarvis",
+   "short_name": "Jarvis",
+   "url": "./?v=jarvis"
   }
  ],
  "display": "standalone",
