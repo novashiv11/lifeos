@@ -904,7 +904,7 @@ function vJarvis(){
     <label>Your name<input id="sname" value="${esc(settings.name||"")}" autocomplete="given-name"></label>
     <label>Claude API key<input id="skey" type="password" value="${esc(settings.key||"")}" placeholder="sk-ant-…" autocomplete="off"></label>
     <span class="covers">⚡ With a key Jarvis answers right here, from your whole life, and saves things itself. Cost: a few cents a month (billed by Anthropic). The key stays on this phone.</span>
-    <ol style="margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px"><li><a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="color:var(--accent)">console.anthropic.com</a> → sign in → <b>API keys</b> → <b>Create key</b></li><li><b>Billing</b> → add the minimum credit (lasts months)</li><li>Copy the key, paste it below, Save</li></ol>
+    <ol style="margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px"><li><a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="color:var(--accent)">console.anthropic.com</a> → sign in → <b>API keys</b> → <b>Create key</b></li><li><b>Billing</b> → add the minimum credit (lasts months)</li><li>Copy the key, paste it in the box above, Save</li></ol>
     <button class="go" type="submit" style="padding:12px">Save</button><button class="linkbtn" type="button" data-chat="nokey">Use my Claude app instead (free)</button></form>`;
   const bubbles=chatLog.length?chatLog.map(bubble).join(""):
     `<div class="msg bot">Hi${settings.name?" "+esc(settings.name):""}! Kuch bhi batao, main yaad rakhunga. Kuch bhi pucho, tumhari life se jawab dunga.</div>${suggestChips()}`;
