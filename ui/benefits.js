@@ -47,8 +47,15 @@ function card(s){
     <a class="bn-sub" href="${esc(s.source)}" target="_blank" rel="noopener">Official rules ↗ · checked ${esc(s.verified)}</a></div>`;
 }
 const copyBlock=(label,text,id)=>`<div class="bn-copy"><small><span>${label}</span><button class="linkbtn" style="padding:0" data-bn-copy="${id}">Copy</button></small><span id="${id}">${esc(text)}</span></div>`;
+// The copy blocks and mail button, redrawn on every keystroke without touching the inputs (so the keyboard stays open).
+function draftHTML(s){
+  const d=draftFor[s.id], list=E().emails(d.emails), m=E().draft(s,P(),settings.name||"",d);
+  return `${list.length>1?copyBlock("BCC",list.join(", "),"bnBcc"):list.length?copyBlock("To",list[0],"bnBcc"):""}
+      ${copyBlock("Subject",m.subject,"bnSub")}${copyBlock("Message",m.body,"bnBody")}
+      <a class="go" style="padding:12px;text-align:center;text-decoration:none" id="bnMail" href="${esc(E().mailto(list,m.subject,m.body))}">Open in email app${list.length>1?` · BCC ${list.length}`:""}</a>`;
+}
 function detail(s){
-  const d=draftFor[s.id]||(draftFor[s.id]={emails:"",when:"",phone:""}), list=E().emails(d.emails), m=E().draft(s,P(),settings.name||"",d), town=P().town||"";
+  const d=draftFor[s.id]||(draftFor[s.id]={emails:"",when:"",phone:""}), town=P().town||"";
   return `<button class="linkbtn" data-bn-back>← All</button>
   <div class="bn-card"><span class="bn-tag yes">You qualify</span><h3>${esc(s.icon||"💶")} ${esc(s.name)}</h3><span>${esc(s.get)}</span><span class="bn-sub">⚠ ${esc(s.catch)}</span>
     <div class="bn-step"><b>1 · Find a ${esc(s.provider)}</b><div class="bn-btns">
@@ -60,9 +67,7 @@ function detail(s){
       <label>Their emails (comma or space between)<textarea rows="2" data-bn-d="emails" placeholder="reception@clinic-one.ie, info@clinic-two.ie">${esc(d.emails)}</textarea></label>
       <label>When are you free? (optional)<input data-bn-d="when" value="${esc(d.when)}" placeholder="weekday mornings, any day after 4pm"></label>
       <label>Your phone (optional)<input data-bn-d="phone" inputmode="tel" value="${esc(d.phone)}"></label>
-      ${list.length>1?copyBlock("BCC",list.join(", "),"bnBcc"):list.length?copyBlock("To",list[0],"bnBcc"):""}
-      ${copyBlock("Subject",m.subject,"bnSub")}${copyBlock("Message",m.body,"bnBody")}
-      <a class="go" style="padding:12px;text-align:center;text-decoration:none" id="bnMail" href="${esc(E().mailto(list,m.subject,m.body))}">Open in email app${list.length>1?` · BCC ${list.length}`:""}</a>
+      <div id="bnDraft" style="display:grid;gap:8px">${draftHTML(s)}</div>
       <span class="bn-sub">Your PPS number is never put in the email. The clinic asks for it at the visit.</span></div>
     <div class="bn-step bn-form"><b>3 · Booked?</b>
       <label>Appointment date<input type="date" data-bn-date value="${today()}"></label>
@@ -87,8 +92,9 @@ async function markBooked(id){
     `Booked ✓ Reminder set for ${next}`);
   openId=null;render();
 }
-document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.bnD&&openId){(draftFor[openId]=draftFor[openId]||{})[t.dataset.bnD]=t.value}});
-document.addEventListener("change",e=>{const t=e.target;if(t.dataset&&t.dataset.bnD&&openId)render()});
+document.addEventListener("input",e=>{const t=e.target;if(!(t.dataset&&t.dataset.bnD&&openId))return;
+  (draftFor[openId]=draftFor[openId]||{})[t.dataset.bnD]=t.value;
+  const box=document.getElementById("bnDraft"),s=schemes().find(x=>x.id===openId);if(box&&s)box.innerHTML=draftHTML(s)});
 document.addEventListener("submit",e=>{if(e.target.id!=="bnProfile")return;e.preventDefault();readFields(e.target);editProfile=false;render();toast("Saved ✓ Checking what you're owed",false)});
 document.addEventListener("click",async e=>{const b=e.target.closest&&e.target.closest("button");if(!b)return;
   if(b.dataset.bnOpen){openId=b.dataset.bnOpen;view_("benefits");return}
