@@ -1,5 +1,5 @@
 /* LifeOS service worker: offline app shell + daily due reminders (Periodic Background Sync, Chrome/Android). */
-const CACHE = "lifeos-9be89ecb91";
+const CACHE = "lifeos-21c86339ad";
 const SHELL = ["./", "index.html", "pwa.js", "manifest.json", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
@@ -40,8 +40,7 @@ const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(
 const nudgeLines = (nudges, t) => [
   ...nudges.filter(n => n.kind === "window" && n.date === t).map(n => "Start now: " + n.text),
   ...nudges.filter(n => n.kind === "due" && n.date === t).map(n => "Today: " + n.text),
-  ...nudges.filter(n => n.kind === "due" && n.date < t).map(n => "Overdue: " + n.text),
-  ...nudges.filter(n => n.kind === "daily" && n.date <= t).map(n => n.text)];
+  ...nudges.filter(n => n.kind === "due" && n.date < t).map(n => "Overdue: " + n.text)];
 
 async function checkDue() {
   const lines = nudgeLines(JSON.parse((await kv("nudges")) || "[]"), today());

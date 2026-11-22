@@ -43,7 +43,7 @@ const GROW=["Aaj ek cheez jo seekhi?","What gave you energy today?","Ek cheez jo
 const growDue=()=>settings.growOff!==true&&(settings.grow||{}).last!==R2.todayIso();
 const growQ=()=>GROW[Math.floor(Date.parse(R2.todayIso())/864e5)%GROW.length];
 function caseLine(r,today){
-  if(r.next_action_date&&daysLeft(r,today)<0&&r.waiting_on==="them")return `No reply from ${r.seller||"them"} · chase / escalate`;
+  if(r.next_action_date&&daysLeft(r,today)<0&&r.waiting_on==="them")return `No reply from ${r.seller||"them"} · ✓ when chased`;
   return r.next_action||"Next step?";
 }
 function row({r,c,kind},today){
@@ -56,9 +56,9 @@ function row({r,c,kind},today){
   const title=kind==="project"?`${r.title}: ${r.next_step}`:kind==="decide"?`Decide: "${r.title}"`:isCase?`${r.title}`:r.title;
   const sub=kind==="decide"?"Default: kal kar lo":isCase?`${caseLine(r,today)} · ${when(r,today)}`:kind==="project"?"Active project · next step":`${R2.TYPE_LABEL[r.type]} · ${when(r,today)}`;
   const act=kind==="decide"?`<button class="td-ok" data-td-tomorrow="${r.id}" aria-label="Kal ke liye set karo">⏭</button>`
-    :isCase?`<button class="td-ok" data-td-case="${r.id}" aria-label="Open case">›</button>`
+    :isCase?`<button class="td-ok" data-td-chased="${r.id}" aria-label="I chased ${esc(r.title)}">✓</button>`
     :`<button class="td-ok" data-td-done="${r.id}" aria-label="Done: ${esc(r.title)}">✓</button>`;
-  return `<div class="td-row${hot?" hot":""}"><button class="td-main" ${isCase?`data-td-case="${r.id}"`:""}><b>${ICON[r.type]||"•"} ${esc(title)}</b><small>${esc(sub)}</small></button>${act}</div>`;
+  return `<div class="td-row${hot?" hot":""}"><button class="td-main"><b>${ICON[r.type]||"•"} ${esc(title)}</b><small>${esc(sub)}</small></button>${act}</div>`;
 }
 function moneyLine(){
   const mv=EXTRA_VIEWS.money&&EXTRA_VIEWS.money._test; if(!mv||!window.MoneyCore)return "";
@@ -77,7 +77,8 @@ function render2(all,today){
 }
 document.addEventListener("click",async e=>{const b=e.target.closest&&e.target.closest("button");if(!b)return;
   if(b.dataset.tdDone){await complete(+b.dataset.tdDone);return}
-  if(b.dataset.tdCase){const id=+b.dataset.tdCase;if(typeof window.openCase==="function")openCase(id);else{view="today";render()}return}
+  if(b.dataset.tdChased){const c=items.get(+b.dataset.tdChased);if(!c)return;const d=R2.addWorkingDays(todayDate(),5),nd=iso(d);
+    await R2.update(c.id,{timeline:[...(c.timeline||[]),{at:R2.todayIso(),channel:"chase",by:"me",i_said:"Chased"}],waiting_on:"them",next_action:"Chase if no reply",next_action_date:nd},`Chased ✓ · next ${nd}`);return}
   if(b.dataset.tdTomorrow){const id=+b.dataset.tdTomorrow,it=items.get(id);if(!it)return;
     if(R2.migrated)await R2.update(id,{due_date:R2.addDays(R2.todayIso(),1)},"Kal ke liye ✓");else await change(id,Object.assign(clone(it),{due:R2.addDays(R2.todayIso(),1)}),"Kal ke liye ✓");return}
   if(b.dataset.tdSetdate){const id=+b.dataset.tdSetdate,v=(document.querySelector(`[data-td-date="${id}"]`)||{}).value;
