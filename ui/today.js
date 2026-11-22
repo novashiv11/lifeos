@@ -33,7 +33,6 @@ function rank(all,today){
   dated.filter(r=>{const n=daysLeft(r,today);return n>=0&&(n<=7||(typeof windowOpen==="function"&&windowOpen(r,today)))}).forEach(r=>rows.push({r,kind:"soon"}));
   const q=v.find(r=>r.type==="deadline"&&!r.date_known&&!(settings.askedLater||[]).includes(r.id));
   if(q)rows.push({r:q,kind:"ask"});
-  for(const f of (window.LIFEOS_CLAIMS||[]))try{(f(today)||[]).forEach(c=>rows.push({c,kind:"claim"}))}catch(e){}
   if(growDue())rows.push({kind:"grow"}); // lowest priority: only shows when there is room
   return rows.slice(0,5);
 }

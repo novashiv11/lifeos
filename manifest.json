@@ -41,11 +41,6 @@
    "url": "./?v=money"
   },
   {
-   "name": "Cases",
-   "short_name": "Cases",
-   "url": "./?v=cases"
-  },
-  {
    "name": "Jarvis",
    "short_name": "Jarvis",
    "url": "./?v=jarvis"

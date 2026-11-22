@@ -5,7 +5,7 @@
 <link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
-<script src="ui/benefits.js"></script><script src="ui/case-draft.js"></script><script src="ui/cases.js"></script><script src="ui/entitle-core.js"></script><script src="ui/letters.js"></script><script src="ui/money-core.js"></script><script src="ui/money-esb.js"></script><script src="ui/money-xlsx.js"></script><script src="ui/money.js"></script><script src="ui/records.js"></script><script src="ui/schemes.js"></script><script src="ui/sync.js"></script><script src="ui/today.js"></script><script src="ui/v4.js"></script></head><body>
+<script src="ui/money-core.js"></script><script src="ui/money-esb.js"></script><script src="ui/money-xlsx.js"></script><script src="ui/money.js"></script><script src="ui/records.js"></script><script src="ui/today.js"></script><script src="ui/v4.js"></script></head><body>
 <title>LifeOS</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -246,9 +246,7 @@ section,.brief,.cards,.chat,.setup,.scan,.answer,.guide{grid-template-columns:mi
   <form class="capbox" id="cap" autocomplete="off">
     <input id="q" name="q" placeholder="Kuch bhi bolo ya pucho…" aria-label="What should I remember? End with ? to ask">
     <button class="db" type="button" id="mic" hidden aria-label="Speak instead of typing">🎤</button>
-    <button class="db" type="button" id="cambtn" aria-label="Scan a barcode or take a photo">📷</button>
     <button class="db go" type="submit" aria-label="Save">↑</button>
-    <input type="file" id="cam" accept="image/*" capture="environment" hidden>
     <input type="file" id="restoreFile" accept="application/json,.json" hidden>
   </form>
   <div id="answer" hidden></div>
@@ -257,12 +255,10 @@ section,.brief,.cards,.chat,.setup,.scan,.answer,.guide{grid-template-columns:mi
 <div class="sheet" id="sheet" hidden>
   <div class="panel" role="menu">
     <button data-v="now" id="tab-now" role="menuitem" hidden><i>🏠</i><span><b>Home</b><small>What Jarvis found for you</small></span></button>
-    <button data-v="benefits" id="tab-benefits" role="menuitem" hidden><i>💶</i><span><b>Claim</b><small>What you're owed: free check-ups and more</small></span></button>
     <button data-v="money" id="tab-money" role="menuitem" hidden><i>💶</i><span><b>Money</b><small>Spending, savings, where it goes</small></span></button>
-    <button data-v="cases" id="tab-cases" role="menuitem" hidden><i>⚖️</i><span><b>Cases</b><small>Disputes, refunds, claims</small></span></button>
-    <button data-v="jarvis" id="tab-jarvis" role="menuitem"><i>🧠</i><span><b>Jarvis</b><small>Ask anything about your life</small></span></button>
+    <button data-v="jarvis" id="tab-jarvis" role="menuitem"><i>🧠</i><span><b>Jarvis</b><small>Ask Jarvis (Claude) · paste reminders back</small></span></button>
     <button data-v="all" id="tab-all" role="menuitem"><i>☺</i><span><b>Me</b><small>Settings, backup, everything</small></span></button>
-    <button id="moretools" type="button" aria-expanded="false"><i>＋</i><span><b>More tools</b><small>Full list, letters</small></span></button>
+    <button id="moretools" type="button" aria-expanded="false"><i>＋</i><span><b>More tools</b><small>Full list</small></span></button>
     <div id="toolbox" hidden>
     <button data-v="today" id="tab-list" role="menuitem"><i>☰</i><span><b>List</b><small>Everything, in one list</small></span></button>
     </div>
@@ -602,8 +598,6 @@ function prefsPanel(){
     <label>Your name<input id="pname" value="${esc(settings.name||"")}" autocomplete="given-name"></label>
     <label>My words (pet, people, shops → area)<textarea id="pwords" rows="3" placeholder="Bruno = pet&#10;Ravi = family&#10;Tesco = money">${esc(settings.myWords||"")}</textarea></label>
     <span class="covers">One per line. Items with these words go to that area. Stays on this phone.</span>
-    <label style="display:flex;gap:10px;align-items:center"><input id="pvoice" type="checkbox"${settings.voiceReply!==false?" checked":""} style="width:22px;height:22px"> 🔊 Jarvis bol ke jawab de (jab tum bolo)</label>
-    <label style="display:flex;gap:10px;align-items:center"><input id="pdaily" type="checkbox"${dailyOn()?" checked":""} style="width:22px;height:22px"> ☀️ Daily Jarvis update (morning reminder)</label>
     <label>Voice language<select id="plang">${[["en-IN","English (India), good for Hinglish"],["en-IE","English (Ireland)"],["hi-IN","Hindi"]].map(([v,l])=>`<option value="${v}"${(settings.voiceLang||"en-IN")===v?" selected":""}>${l}</option>`).join("")}</select></label>
     <button class="go" type="submit" style="padding:12px">Save settings</button></form>
     <p class="hint" style="margin:8px 0 0"><a href="privacy.html" target="_blank" rel="noopener" style="color:var(--accent)">Privacy: what stays on your phone</a></p></section>`;
@@ -647,7 +641,7 @@ function exportIcs(){
 }
 function backupNow(){
   const data={app:"LifeOS",format:1,exported:new Date().toISOString(),items:[...items.values()],
-    settings:{name:settings.name||"",voiceLang:settings.voiceLang||"",myWords:settings.myWords||"",lifeContext:settings.lifeContext||"",profile:settings.profile||"",claims:settings.claims||""}}; // API key is never exported
+    settings:{name:settings.name||"",voiceLang:settings.voiceLang||"",myWords:settings.myWords||"",lifeContext:settings.lifeContext||""}}; // API key is never exported
   const name=`lifeos-backup-${iso(todayDate())}.json`, file=new File([JSON.stringify(data,null,1)],name,{type:"application/json"});
   const done=()=>{settings.lastBackup=iso(todayDate());saveSettings();render();toast("Backup saved",false)};
   shareFile(file,"LifeOS backup",done);
@@ -665,409 +659,63 @@ async function applyRestore(){
   undoStack=[]; render(); toast(`Restored ${r.items.length} items`,false);
 }
 
-/* ---------- My life: what Jarvis knows about this person. Lives only on the phone (settings.lifeContext) ---------- */
-const CTX_MAX=6000;
-const aboutMe=()=>{const c=(settings.lifeContext||"").trim();return c?`About me (my life context; trust it over guesses, and use it to personalise every answer):\n${c}\n\n`:""};
-const LEARN_RULE=`"+" lines are ONLY things I must do, pay, renew, attend or track (with a date if known). Facts about who I am, my preferences, projects or background are NEVER "+" lines.
-If you learned a lasting fact about my life (people, places, pets, home, work, money, health, habits, preferences, goals), add one line per fact to the block: "learn: <short fact>". If a fact in my context is now wrong, add "forget: <words from that line>". Only facts about me, never ID, PPSN, passport or account numbers.`;
-function learnFacts(learn,forget){
-  let lines=(settings.lifeContext||"").split("\n");
-  for(const f of forget){const k=f.toLowerCase().trim();if(k.length>=3)lines=lines.filter(l=>!l.toLowerCase().includes(k))}
-  const have=new Set(lines.map(l=>l.replace(/^[-•*]\s*/,"").trim().toLowerCase()));
-  const add=learn.map(f=>f.replace(/\b\d{6,}\b/g,"").trim()).filter(f=>f&&!have.has(f.toLowerCase()));
-  if(add.length){if(!lines.some(l=>/^#+\s*learned/i.test(l)))lines.push("","## Learned");lines.push(...add.map(f=>"- "+f))}
-  settings.lifeContext=lines.join("\n").replace(/\n{3,}/g,"\n\n").trim().slice(0,CTX_MAX);saveSettings();
-  return add.length;
-}
-
-/* ---------- Jarvis: chat with Claude using the user's own key (phone app only) ---------- */
-const MODEL="claude-haiku-5-5";
-const SYSTEM=`You are Jarvis, the assistant inside LifeOS, a private life-admin app. The user lives in Ireland and may write in English or Hinglish; reply in the same style, briefly (at most 4 short sentences unless asked for detail).
-You are the user's personal memory. Answer any question about their life from "About me", their LifeOS items (open and recently done) and this chat. If the answer isn't there, say you don't know yet and ask one short question; when they answer, call remember_fact.
-Each user message starts with today's date and a snapshot of their LifeOS items (id | area | due | text). Answer questions from that snapshot.
-When the user tells you something to remember, a task, a date or a plan, call add_item with one short line in their words, including the date in plain words (e.g. "IRP card expires 2027-01-20", "dentist kal 4pm", "rent every month"). Call add_item once per separate thing.
-When the user says they finished something on the list, call complete_item with its id.
-For Irish admin (IRP/immigration, NCT, motor tax, Revenue, RTB, PPSN) give general guidance and point to the official site (irishimmigration.ie, ncts.ie, motortax.ie, revenue.ie, rtb.ie, citizensinformation.ie). If you are not sure of a fee, deadline or rule, say so and point to the official site instead of guessing.
-When you learn a lasting fact about the user's life (people, places, pets, home, work, preferences, goals) or a fact in "About me" changes, call remember_fact. Learn only from this user's own life.
-Never ask for passport, IRP, PPSN or bank numbers. When the user sends a photo of a card, letter or bill, save only what they must act on (expiry/renewal dates, amounts due and due dates) and never copy document, card or account numbers into items or replies.`;
-const TOOLS=[
- {name:"add_item",description:"Save a new note, task, reminder or dated item to the user's LifeOS.",strict:true,
-  input_schema:{type:"object",properties:{text:{type:"string",description:"One short line, with any date in plain words"}},required:["text"],additionalProperties:false}},
- {name:"complete_item",description:"Mark an existing item done by its id. Recurring items move to their next date.",strict:true,
-  input_schema:{type:"object",properties:{id:{type:"integer"}},required:["id"],additionalProperties:false}},
- {name:"remember_fact",description:"Add a lasting fact about the user's life to their private life context, optionally removing an outdated line.",strict:true,
-  input_schema:{type:"object",properties:{fact:{type:"string",description:"One short fact, e.g. 'Dog Bruno, female, eats kibble mixed with meat'"},
-    forget:{type:"string",description:"Words from an outdated context line to remove, or empty string"}},required:["fact","forget"],additionalProperties:false}}];
-let chatMsgs=[], chatLog=[], chatBusy=false;
-// Token saving: the item snapshot and any photo ride only on the CURRENT turn (injected at send time), never stay in history,
-// so a long chat doesn't re-send old snapshots/photos every message (and never nears Haiku's 100k price cliff).
-let turnStart=-1, turnExtra=null;
-const apiCost=()=>{const u=settings.apiUsage;return u&&u.month===iso(todayDate()).slice(0,7)?(u.in*0.10+u.out*0.50)/1e6:0}; // u.in is stored price-weighted (cache read 0.1x, write 1.25x)
-const CHAT_OK=!window.claude; // inside claude.ai the page can't reach the API; the phone app can
+/* ---------- Jarvis bridge. Jarvis lives in a Claude Project (thinking, research, drafts).
+   This app does what a chat can't: remind on time, capture in 2 seconds, and hand the list over and back. ---------- */
+const CHAT_OK=!window.claude;
 function snapshot(today){
   const rows=[...items.values()].filter(i=>!i.done).sort((a,b)=>(a.due||"9999").localeCompare(b.due||"9999")).slice(0,150)
     .map(i=>`${i.id} | ${area(i.domain).label} | ${i.due||"-"} | ${i.text}`);
-  const since=iso(addDays(today,-60)), done=[...items.values()].filter(i=>i.done&&(i.done_at||"").slice(0,10)>=since)
-    .sort((a,b)=>(b.done_at||"").localeCompare(a.done_at||"")).slice(0,30).map(i=>`${(i.done_at||"").slice(0,10)} | ${i.text}`);
-  const m=iso(today).slice(0,7), spent=[...items.values()].filter(i=>(i.created||"").slice(0,7)===m).reduce((a,i)=>a+((i.metrics||[]).find(x=>x.name==="spent")||{value:0}).value,0);
-  return `Today: ${iso(today)}\nMy LifeOS items (open):\n${rows.join("\n")||"(none yet)"}${done.length?`\nDone in the last 60 days:\n${done.join("\n")}`:""}${spent?`\nSpent this month (logged): €${+spent.toFixed(2)}`:""}`;
+  return `My LifeOS list (today ${iso(today)}):\n${rows.join("\n")||"(empty)"}`;
 }
-// true = works, false = rejected (bad key / no credit), null = couldn't check (offline)
-async function checkKey(key){
-  try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":key,
-      "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-      body:JSON.stringify({model:MODEL,max_tokens:16,messages:[{role:"user",content:"ping"}]})});
-    return r.ok?true:(r.status===401||r.status===403||r.status===400)?false:null}catch(_){return null}
+let pasteResult=null, lastPrompt="", awaitingReply=false;
+const claudePrompt=q=>{let snap=snapshot(todayDate());if(snap.length>6000)snap=snap.slice(0,6000)+"\n…";
+  return `${q}\n\n${snap}\n\nIf I should save anything with a date or mark something done, end with:\nLIFEOS\n+ one short line per item, date in plain words\ndone #<id>`};
+// Our own prompt on the clipboard must never be read back as items.
+const isOurPrompt=t=>!!t&&(t.trim()===lastPrompt.trim()||t.includes("My LifeOS list (today "));
+function askClaude(q){ // must run inside a tap: clipboard + opening Claude need a user gesture
+  const text=claudePrompt(q); lastPrompt=text; awaitingReply=true;
+  try{navigator.clipboard&&navigator.clipboard.writeText(text).catch(()=>{})}catch(e){}
+  const url="https://claude.ai/new?q="+encodeURIComponent(text); window.open(url.length<8000?url:"https://claude.ai/new","_blank","noopener");
+  toast("Jarvis khul raha hai (question copied). Reply ki LIFEOS lines yahan paste karo.",false);
 }
-async function callClaude(){
-  const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":settings.key,
-    "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-    body:JSON.stringify({model:MODEL,max_tokens:2048,system:[{type:"text",text:SYSTEM,cache_control:{type:"ephemeral"}},...(aboutMe()?[{type:"text",text:aboutMe()}]:[])],tools:TOOLS,messages:chatMsgs.map((m,i)=>i===turnStart&&turnExtra?{role:"user",content:[...turnExtra,...m.content]}:m),output_config:{effort:"low"},cache_control:{type:"ephemeral"}})});
-  const data=await r.json().catch(()=>({}));
-  if(r.ok&&data.usage){const m=iso(todayDate()).slice(0,7),u=settings.apiUsage&&settings.apiUsage.month===m?settings.apiUsage:{month:m,in:0,out:0},x=data.usage;
-    u.in+=(x.input_tokens||0)+0.1*(x.cache_read_input_tokens||0)+1.25*(x.cache_creation_input_tokens||0);u.out+=x.output_tokens||0;settings.apiUsage=u;saveSettings()}
-  if(!r.ok){const m=data.error&&data.error.message||r.statusText;throw new Error(r.status===401?"That API key didn't work. Check it in Jarvis settings.":r.status===429?"Too many requests right now. Try again in a minute.":m)}
-  return data;
-}
-async function runTool(b){
-  if(b.name==="remember_fact"&&typeof b.input.fact==="string"&&b.input.fact.trim()){
-    const n=learnFacts([b.input.fact],b.input.forget?[b.input.forget]:[]);
-    chatLog.push({who:"act",text:`🧠 learned: ${b.input.fact.trim()}`});return n?"Saved to life context.":"Already known."}
-  if(b.name==="add_item"&&typeof b.input.text==="string"&&b.input.text.trim()){
-    const id=Math.max(0,...items.keys())+1, it={id,created:nowStamp(),done:false,...parse(b.input.text.trim(),todayDate())};
-    await backend.put(it); chatLog.push({who:"act",text:`✓ saved to ${area(it.domain).label}${it.due?` · ${it.due}`:""}: ${it.text}`});
-    return `Saved as #${id} in ${area(it.domain).label}${it.due?`, due ${it.due}`:""}.`;
-  }
-  if(b.name==="complete_item"&&items.has(b.input.id)){
-    const before=items.get(b.input.id).text; await complete(b.input.id); chatLog.push({who:"act",text:`✓ done: ${before}`});
-    const after=items.get(b.input.id); return after&&!after.done?`Done; next due ${after.due}.`:"Marked done.";
-  }
-  return {error:"Invalid input or unknown item."};
-}
-async function askJarvis(text,image){
-  if(chatBusy)return;
-  if(chatMsgs.length>24){ // keep ~the last 6 exchanges, cut at a real user message (never orphan a tool_result)
-    let cut=chatMsgs.length-12;
-    while(cut<chatMsgs.length&&(chatMsgs[cut].role!=="user"||chatMsgs[cut].content.some(c=>c.type==="tool_result")))cut++;
-    chatMsgs=chatMsgs.slice(cut)}
-  chatBusy=true; if(image)chatLog.push({who:"img",src:image.url}); chatLog.push({who:"me",text}); render();
-  turnExtra=[{type:"text",text:snapshot(todayDate())}];
-  if(image)turnExtra.push({type:"image",source:{type:"base64",media_type:"image/jpeg",data:image.b64}});
-  turnStart=chatMsgs.length;
-  chatMsgs.push({role:"user",content:[{type:"text",text:image?`(sent a photo) ${text}`:text}]});
-  try{
-    for(let step=0;step<5;step++){
-      const res=await callClaude();
-      chatMsgs.push({role:"assistant",content:res.content}); // append unchanged (thinking blocks included)
-      if(res.stop_reason==="refusal"){chatLog.push({who:"bot",text:"I can't help with that one."});break}
-      const said=res.content.filter(c=>c.type==="text").map(c=>c.text).join("\n").trim();
-      if(said)chatLog.push({who:"bot",text:said});
-      const calls=res.content.filter(c=>c.type==="tool_use");
-      if(res.stop_reason!=="tool_use"||!calls.length)break;
-      const results=[];
-      for(const c of calls){const out=await runTool(c);
-        results.push(typeof out==="string"?{type:"tool_result",tool_use_id:c.id,content:out}:{type:"tool_result",tool_use_id:c.id,content:out.error,is_error:true})}
-      chatMsgs.push({role:"user",content:results});
-    }
-  }catch(e){chatMsgs.length=turnStart; // drop the whole failed turn, so no tool_use is left without its resultchatLog.push({who:"act",text:navigator.onLine===false?"Offline hai. List se jawab:":`⚠ ${e.message}`});
-    if(isQuestion(text)){const a=localAnswer(text);if(a)chatLog.push({who:"bot",text:a})}}
-  turnExtra=null; chatBusy=false; render();
-}
-function vJarvis(){
-  if(!CHAT_OK)return `<div class="jhead"><div class="orb"></div><div><b>Jarvis</b><small>phone app only</small></div></div><div class="setup"><b>Jarvis chat works in the phone app.</b><span class="covers">Open LifeOS on your phone to chat.</span></div>`;
-  if(!settings.key&&!settings.editing)return vAskClaude();
-  if(settings.editing)return `<div class="jhead"><div class="orb"></div><div><b>Jarvis</b><small>optional: automatic chat</small></div></div><form class="setup" id="setup"><b>Claude API key (optional)</b>
-    <label>Your name<input id="sname" value="${esc(settings.name||"")}" autocomplete="given-name"></label>
-    <label>Claude API key<input id="skey" type="password" value="${esc(settings.key||"")}" placeholder="sk-ant-…" autocomplete="off"></label>
-    <span class="covers">⚡ With a key Jarvis answers right here, from your whole life, and saves things itself. Cost: a few cents a month (billed by Anthropic). The key stays on this phone.</span>
-    <ol style="margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px"><li><a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="color:var(--accent)">console.anthropic.com</a> → sign in → <b>API keys</b> → <b>Create key</b></li><li><b>Billing</b> → add the minimum credit (lasts months)</li><li>Copy the key, paste it in the box above, Save</li></ol>
-    <button class="go" type="submit" style="padding:12px">Save</button><button class="linkbtn" type="button" data-chat="nokey">Use my Claude app instead (free)</button></form>`;
-  const bubbles=chatLog.length?chatLog.map(bubble).join(""):
-    `<div class="msg bot">${esc(briefingText())}
-Kuch bhi bolo ya pucho: orb dabao ya neeche likho.</div>${suggestChips()}`;
-  return `${jarvisHero(`● app ke andar AI · ${items.size} cheezein yaad · is mahine $${apiCost().toFixed(apiCost()<0.01?3:2)}`,
-    `<button class="linkbtn" data-teach aria-expanded="${showTeach}" aria-label="My life context">🧠</button><button class="linkbtn" data-chat="new">New</button><button class="linkbtn" data-chat="settings">⚙︎</button>`)}
-    ${showTeach?teachPanel():""}<div class="chat">${bubbles}${chatBusy?`<div class="msg act">Jarvis is thinking…</div>`:""}</div>
-    <form class="dock" id="chatform" autocomplete="off"><input id="cq" placeholder="Kuch bhi bolo ya pucho…" aria-label="Message Jarvis">
-    <button class="db" type="button" data-chatcam aria-label="Send a photo">📷</button><button class="db go" type="submit" aria-label="Send">↑</button></form>`;
-}
-
-/* ---------- Ask Claude: use the person's own Claude app / subscription, no API key ---------- */
-let pasteResult=null;
-function claudePrompt(q){
-  let snap=snapshot(todayDate());
-  if(snap.length>5000)snap=snap.slice(0,5000)+"\n…(more items not shown)";
-  return `You are Jarvis, my life-admin assistant inside my LifeOS app. I live in Ireland. Reply in my style (English or Hinglish), short and practical. For Irish admin (IRP, NCT, motor tax, Revenue, RTB) point me to the official site if you're not sure.
-
-${aboutMe()}${snap}
-
-My question: ${q}
-
-If I should save anything (tasks, dates, renewals) or mark something done, end your reply with this block, exactly:
-LIFEOS
-+ one short line per new item, with the date in plain words (e.g. IRP card expires 2027-01-20)
-done #<id> for each finished item
-${LEARN_RULE}
-Never include passport, IRP, PPSN or bank numbers.`;
-}
-let lastPrompt="", awaitingReply=false;
-// Clipboard text that is our own prompt (not Claude's reply) must never be parsed as items.
-const isOurPrompt=t=>!!t&&(t.trim()===lastPrompt.trim()||/^(You are Jarvis|Daily update for my LifeOS|Using your memory of me|You keep my "life context"|Weekly review for my LifeOS)/.test(t.trim()));
 async function pasteFromClipboard(){
-  let t=""; try{t=await navigator.clipboard.readText()}catch(_){toast("Jarvis kholo aur box mein long-press → Paste",false);view="jarvis";showPaste=true;render();return}
-  if(!t.trim()||isOurPrompt(t)){toast("Pehle Claude ka reply copy karo (reply ke neeche Copy), phir dobara tap",false);return}
-  pasteResult=parseClaude(t); awaitingReply=false; if(view!=="letters")view="jarvis"; render(); window.scrollTo(0,document.body.scrollHeight);
+  let t=""; try{t=await navigator.clipboard.readText()}catch(_){toast("Jarvis tab mein box pe long-press → Paste",false);view="jarvis";render();return}
+  if(!t.trim()||isOurPrompt(t)){toast("Pehle Jarvis ka reply copy karo, phir tap",false);return}
+  pasteResult=parseClaude(t); awaitingReply=false; view="jarvis"; render();
 }
 function pasteNudge(){
   let b=document.getElementById("pasteNudge");
   if(!awaitingReply||pasteResult){if(b)b.remove();return}
   if(!b){b=document.createElement("button");Object.assign(b,{id:"pasteNudge",type:"button"});b.dataset.pasteback="1";document.getElementById("banners").prepend(b)}
-  b.textContent="📋 Claude ka reply paste karo · 1 tap";
+  b.textContent="📋 Jarvis ka reply paste karo · 1 tap";
 }
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&awaitingReply)render()});
-function askClaude(q,prompt){ // must run inside a tap/submit handler: clipboard + opening the app need a user gesture
-  const text=prompt||claudePrompt(q); lastPrompt=text; awaitingReply=true; const url="https://claude.ai/new?q="+encodeURIComponent(text);
-  try{navigator.clipboard&&navigator.clipboard.writeText(text).catch(()=>{})}catch(e){}
-  window.open(url.length<8000?url:"https://claude.ai/new","_blank","noopener");
-  askedQ=q; view="jarvis"; render();
-  toast("Claude khul raha hai (question copied too). Reply ke baad LIFEOS lines yahan paste karo.",false);
-}
-let askedQ="", showProject=false, showPaste=false, showTeach=false, teachDraft=null;
-function teachPanel(){
-  const v=teachDraft!=null?teachDraft:(settings.lifeContext||"");
-  return `<div class="setup"><b>🧠 My life: what Jarvis knows about you</b>
-    <span class="covers">Jarvis reads this before every answer and keeps adding to it (it learns from your chats and list). Only on this phone. No ID or account numbers.</span>
-    <textarea id="ctx" rows="10" placeholder="## Me&#10;- From India, live in Ireland&#10;## Pets&#10;- Dog Bruno, eats kibble with meat&#10;## How to help me&#10;- Short answers, Hinglish">${esc(v)}</textarea>
-    <div class="acts"><button class="go" style="padding:10px 14px" data-teachsave>Save</button><button class="linkbtn" data-teachpaste>📋 Paste</button><button class="linkbtn" data-teachrefresh>✨ Claude se update karwao</button></div></div>`;
-}
-function memoryPrompt(){
-  let snap=snapshot(todayDate());
-  if(snap.length>4000)snap=snap.slice(0,4000)+"\n…(more items not shown)";
-  return `Using your memory of me and our past conversations (search them if you can), list everything my life-admin app LifeOS should track for me: document and residence-permit expiry dates, insurance and car renewals (NCT, motor tax), recurring bills and rent, appointments, birthdays and anniversaries, health routines, goals and ideas I mentioned.
-Only include things you actually know from our chats. Don't invent dates; if you only know the month, write the month.
-For monthly bills write the day if you know it ("Eir bill every month on the 5th"); if you don't, write "paid each month" without "every".
-Skip anything already in my list, and skip everything already in "About me" (those are facts, not tasks):
-
-${aboutMe()}${snap}
-
-Reply with ONLY this block:
-LIFEOS
-+ one short line per item, with the date in plain words (e.g. "IRP card expires 2027-01-20", "rent every month", "mom birthday 3 jan")
-${LEARN_RULE}
-Never include passport, IRP, PPSN or bank numbers.`;
-}
-const PROJECT_INSTRUCTIONS=`You are Jarvis: my personal life OS. One person only: me. Learn from my life, adapt to it, and never answer generically when my facts say otherwise.
-SOURCES: "About me" (below, if present) is who I am. The newest lifeos-backup-*.json in this project is my live list (id, text, domain, due, repeat, done). Other files (letters, bills, cards): read dates and amounts, never copy ID, passport, PPSN or account numbers.
-ANSWER: short and practical, in my style (English or Hinglish). Lead with the answer. Give one recommendation with a default. For Irish admin (IRP/immigration, NCT, motor tax, Revenue, RTB) give the steps and the official link; say so when unsure. Nudge me about one thing I'm missing (renewal coming up, stale dispute, idea never acted on).
-LEARN: whenever something should change, end your reply with:
-LIFEOS
-+ one short line per new item, with the date in plain words
-done #<id> for finished items
-learn: <fact> for each lasting fact about my life you picked up (forget: <words> when one changed)
-I paste that block back into the app. Learn only from my life: my list, my files, my chats.
-When I say "refresh", rewrite my whole About me (sections: Me, People, Pets, Home, Money, Health, Documents, Projects, How to help me, Unknown; max 45 lines) as a block starting with the line LIFECONTEXT.
-When I say "weekly": 3 actions for this week, 1 thing I'm avoiding, 1 win.`;
-/* ---------- Daily Jarvis update: one tap a day, Claude app + its Gmail/Calendar connectors do the reading ---------- */
-const dailyOn=()=>settings.dailyOn!==false;
-const dailyDue=today=>dailyOn()&&settings.lastDaily!==iso(today);
-function dailyPrompt(){
-  const today=todayDate(), since=settings.lastDaily||iso(addDays(today,-7));
-  let snap=snapshot(today); if(snap.length>4500)snap=snap.slice(0,4500)+"\n…(more items not shown)";
-  const ch=[...items.values()], made=ch.filter(i=>(i.created||"").slice(0,10)>=since).map(i=>"+ "+i.text).slice(0,30),
-    done=ch.filter(i=>(i.done_at||"").slice(0,10)>=since).map(i=>"✓ "+i.text).slice(0,30);
-  return `Daily update for my LifeOS (last update: ${since}). You are Jarvis, my life-admin assistant.
-1. If you have my Gmail, Google Calendar or Drive connected, search them for everything since ${since}: bills and payment due dates, renewals and expiries, appointments, deliveries and return windows, replies or forms I owe, deadlines. Also use your memory of our recent chats.
-2. Compare with my list below. Only add what is NEW and needs action. Mark finished things done.
-3. In max 5 lines (Hinglish, plain words) tell me: what's new, what's urgent today, one thing I'm avoiding.
-
-${aboutMe()}${snap}
-${made.length||done.length?`\nChanged in the app since ${since}:\n${[...made,...done].join("\n")}\n`:""}
-End with this block (skip lines that don't apply):
-LIFEOS
-+ one short line per new item, with the date in plain words
-done #<id> for finished items
-${LEARN_RULE}
-Never include passport, IRP, PPSN, bank or card numbers.`;
-}
-function runDaily(){ // called from a tap: askClaude needs the user gesture
-  askClaude("☀️ Daily update",dailyPrompt());
-  settings.lastDaily=iso(todayDate()); saveSettings(); localBackend.save(); // refreshes tomorrow's reminder too
-}
-function dailyNudge(today){
-  let b=document.getElementById("dailyNudge"); const show=(view==="jarvis"||view==="today"||(view===HOME&&view!=="now"))&&dailyDue(today); // Today stays calm: max 5 things
-  if(!show){if(b)b.remove();return}
-  if(!b){b=document.createElement("button");Object.assign(b,{id:"dailyNudge",type:"button",className:"go"});b.dataset.daily="1";b.style.padding="10px 14px";document.getElementById("banners").prepend(b)}
-  b.textContent="☀️ Jarvis daily update · 1 tap";
-}
-function refreshPrompt(){
-  let snap=snapshot(todayDate()); if(snap.length>5000)snap=snap.slice(0,5000)+"\n…(more items not shown)";
-  return `You keep my "life context": the private notes my assistant Jarvis reads before every answer. Rewrite it so it is complete, current and compact.
-Use my current context, my LifeOS list below, and your memory of me and our past chats (search them if you can). Only facts about MY life, nothing generic, nothing invented. Mark guesses with "(?)".
-Sections (skip empty ones): ## Me (where from, where I live, languages, work, style) · ## People · ## Pets · ## Home · ## Money · ## Health · ## Documents & deadlines (dates only, never numbers) · ## Projects & ideas · ## How to help me (tone, pet peeves).
-Max 45 short lines. Never include ID, PPSN, passport, bank or policy numbers, or full addresses.
-
-Current context:
-${(settings.lifeContext||"(empty)").trim()}
-
-${snap}
-
-Reply with ONLY this block:
-LIFECONTEXT
-<the new context>`;
-}
 function parseClaude(text){
-  const cx=text.search(/^\s*LIFECONTEXT\s*$/m);
-  if(cx>=0){const body=text.slice(cx).replace(/^\s*LIFECONTEXT\s*\n/,"").replace(/\b\d{6,}\b/g,"").trim().slice(0,CTX_MAX);
-    if(body.length>=20)return {adds:[],dones:[],learn:[],forget:[],context:body}}
-  const at=text.search(/^\s*LIFEOS\s*$/m), body=at>=0?text.slice(at):text, adds=[], dones=[], learn=[], forget=[];
+  const at=text.search(/^\s*LIFEOS\s*$/m), body=at>=0?text.slice(at):text, adds=[], dones=[];
   for(const raw of body.split(/\r?\n/)){const l=raw.trim();let m;
-    if((m=l.match(/^\+\s*(.{3,200})$/))||(at>=0&&(m=l.match(/^[•*-]\s+(.{3,200})$/))))adds.push(m[1].trim());
-    else if(m=l.match(/^done\s*#?(\d+)\b/i))dones.push(+m[1]);
-    else if(m=l.match(/^learn\s*:\s*(.{3,200})$/i))learn.push(m[1].trim());
-    else if(m=l.match(/^forget\s*:\s*(.{3,200})$/i))forget.push(m[1].trim());}
-  return {adds:[...new Set(adds)],dones:[...new Set(dones)].filter(id=>items.has(id)&&!items.get(id).done),learn:[...new Set(learn)],forget:[...new Set(forget)]};
+    if((m=l.match(/^\+\s*(.{3,200})$/))||(at>=0&&(m=l.match(/^[•*-]\s+(.{3,200})$/))))adds.push(m[1].replace(/\b\d{7}\s?[A-Za-z]{1,2}\b/g,"").trim());
+    else if(m=l.match(/^done\s*#?(\d+)\b/i))dones.push(+m[1]);}
+  return {adds:[...new Set(adds)],dones:[...new Set(dones)].filter(id=>items.has(id)&&!items.get(id).done)};
 }
 async function applyPaste(){
   const r=pasteResult; pasteResult=null; awaitingReply=false; if(!r)return;
-  if(r.context){settings.lifeContext=r.context;saveSettings();buzz(15);render();toast("🧠 Life context updated",false);return}
   for(const t of r.adds)await capture(t);
   for(const id of r.dones)await complete(id);
-  const n=(r.learn||[]).length||(r.forget||[]).length?learnFacts(r.learn||[],r.forget||[]):0;
-  buzz(15); render(); toast(`Ho gaya ✓ ${r.adds.length} saved${r.dones.length?`, ${r.dones.length} done`:""}${n?`, ${n} learned 🧠`:""}`,false);
+  buzz(15); render(); toast(`Ho gaya ✓ ${r.adds.length} saved${r.dones.length?`, ${r.dones.length} done`:""}`,false);
 }
 const isQuestion=t=>/\?\s*$/.test(t)||/^(kya|kab|kitna|kitni|kitne|kaun|kaunsa|kaise|kahan|kyun|kyu|what|when|where|who|why|how|which|show|list|any|is|are|do|does|did|can|should|tell)\b/i.test(t.trim())||
   /\b(kab|kya|kitna|kitni|kitne|kaun|kaise|kahan|scene)\b/i.test(t)&&!parse(t,todayDate()).due;
-function localAnswer(q){
-  const today=todayDate(), all=[...items.values()], open=all.filter(i=>!i.done), line=i=>`• ${i.text}${i.due?` (${rel(daysLeft(i,today))})`:""}`;
-  if(/\b(mere|mera|meri|my)\b.*\b(baare|about)\b|\bknow about me\b|\bjaante\b/i.test(q)){
-    const facts=(settings.lifeContext||"").split("\n").filter(l=>l.trim()&&!l.startsWith("#"));
-    return facts.length?`Main tumhare baare mein ${facts.length} baatein jaanta hoon:\n${facts.slice(0,8).join("\n")}${facts.length>8?"\n…baaki 🧠 My life mein":""}`:"Abhi kuch nahi. 🧠 My life mein apne baare mein likho, ya mujhe batate raho.";}
-  if(/\b(kharch\w*|spent|spend|expense\w*|paisa)\b/i.test(q)){
-    const m=iso(today).slice(0,7), its=all.filter(i=>(i.created||"").slice(0,7)===m&&(i.metrics||[]).some(x=>x.name==="spent"));
-    const sum=its.reduce((a,i)=>a+i.metrics.find(x=>x.name==="spent").value,0);
-    return its.length?`Is mahine €${+sum.toFixed(2)} kharcha log hua (${its.length} entries):\n${its.slice(-5).map(i=>"• "+i.text).join("\n")}`:"Is mahine koi kharcha log nahi hua. Likho: \"spent €40 at tesco\".";}
-  if(/\b(aaj|today)\b/i.test(q)){
-    const its=openDated(open).filter(i=>daysLeft(i,today)<=0||windowOpen(i,today)).slice(0,8);
-    return its.length?`Aaj ye dekh lo:\n${its.map(line).join("\n")}`:"Aaj kuch pending nahi 🌿";}
-  if(/\b(agle|next|upcoming|aane|coming|month|mahine|hafte|week)\b/i.test(q)){
-    const its=openDated(open).filter(i=>daysLeft(i,today)>=0&&daysLeft(i,today)<=30).slice(0,10);
-    return its.length?`Agle 30 din:\n${its.map(line).join("\n")}`:"Agle 30 din mein kuch dated nahi.";}
-  const hits=answer(q,all,today), qt=tokens(q);
-  const facts=(settings.lifeContext||"").split("\n").filter(l=>l.trim()&&!l.startsWith("#")&&[...tokens(l)].some(x=>qt.has(x))).slice(0,3);
-  if(!hits.length&&!facts.length)return "";
-  return [...hits.map(i=>`${i.done?"✓ ":""}${line(i).slice(2)}${guideFor(i)?" · guide hai":""}`).map(x=>"• "+x),...facts.map(f=>"🧠 "+f.replace(/^[-•*]\s*/,""))].join("\n");
-}
-async function jarvisFree(t){
-  if(window.ENT_ROUTE&&ENT_ROUTE(t))return;
-  chatLog.push({who:"me",text:t});
-  if(isQuestion(t)){const a=localAnswer(t);
-    chatLog.push({who:"bot",text:a||"Ye meri list mein nahi hai.",q:t});render();window.scrollTo(0,document.body.scrollHeight);return}
-  await capture(t); const it=[...items.values()].sort((a,b)=>b.id-a.id)[0];
-  chatLog.push({who:"bot",text:`✓ Yaad rakh liya · ${area(it.domain).icon} ${area(it.domain).label}${it.due?` · ${rel(daysLeft(it,todayDate()))}`:""}`});
-  render(); window.scrollTo(0,document.body.scrollHeight);
-}
-/* ---------- Jarvis voice: tap the orb, talk, it answers out loud ---------- */
-let voiceTurn=false, jstate="";
-const SRec=window.SpeechRecognition||window.webkitSpeechRecognition;
-function briefingText(){
-  const today=todayDate(), [hi]=greeting(), open=openDated([...items.values()].filter(i=>!i.done));
-  const now=open.filter(i=>daysLeft(i,today)<=0), win=open.filter(i=>daysLeft(i,today)>0&&windowOpen(i,today)), soon=open.filter(i=>daysLeft(i,today)>0&&daysLeft(i,today)<=7&&!windowOpen(i,today));
-  let t=`${hi}${settings.name?" "+settings.name:""}.`;
-  t+=now.length?` Aaj ${now.length} kaam: ${now.slice(0,3).map(i=>i.text).join(", ")}.`:" Aaj kuch pending nahi.";
-  if(win.length)t+=` ${win[0].text}: shuru karne ka time aa gaya.`;
-  if(soon.length)t+=` Is hafte: ${soon.slice(0,2).map(i=>i.text).join(", ")}.`;
-  return t;
-}
-const jarvisHero=(sub,buttons)=>`<div class="jhero"><button class="jorb ${chatBusy?"thinking":jstate}" data-talk aria-label="Jarvis se bolo"></button>
-  <div class="jsay" id="jsay">${chatBusy?"Soch raha hoon…":jstate==="listening"?"Sun raha hoon…":SRec?"Orb dabao aur bolo":"Neeche likho"}</div>
-  <div class="jhead jsub"><small>${sub}</small><button class="linkbtn" data-brief aria-label="Briefing suno">▶ Briefing</button>${buttons}</div></div>`;
-function setJ(st,text){jstate=st;const o=document.querySelector(".jorb"),say=document.getElementById("jsay");
-  if(o)o.className="jorb "+st; if(say)say.textContent=text||(st==="listening"?"Sun raha hoon…":st==="speaking"?"Bol raha hoon…":SRec?"Orb dabao aur bolo":"Neeche likho")}
-function speak(t){
-  if(settings.voiceReply===false||!window.speechSynthesis||!t)return;
-  const clean=t.replace(/[•✓🧠⚠🌿📋☀️]/gu,"").replace(/\(in (\d+)d\)/g,"($1 din mein)").replace(/\((\d+)d overdue\)/g,"($1 din late)").replace(/€(\d+)/g,"$1 euro").slice(0,700);
-  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(clean);u.lang=settings.voiceLang||"en-IN";u.rate=1.05;
-    u.onstart=()=>setJ("speaking");u.onend=u.onerror=()=>setJ("");speechSynthesis.speak(u)}catch(_){}
-}
-async function jarvisTurn(t){
-  if(settings.key&&CHAT_OK)await askJarvis(t);else await jarvisFree(t);
-  if(voiceTurn){voiceTurn=false;const last=[...chatLog].reverse().find(m=>m.who==="bot");if(last)speak(last.text)}
-}
-function listen(){
-  if(!SRec){toast("Is browser mein voice nahi chalti. Neeche likho.",false);return}
-  try{window.speechSynthesis&&speechSynthesis.cancel()}catch(_){}
-  const rec=new SRec(); rec.lang=settings.voiceLang||"en-IN"; rec.interimResults=true; let heard="";
-  setJ("listening");
-  rec.onresult=ev=>{heard=[...ev.results].map(x=>x[0].transcript).join(" ");setJ("listening",heard)};
-  rec.onerror=ev=>{if(ev.error==="not-allowed"||ev.error==="service-not-allowed")toast("Mic blocked hai. Phone settings mein LifeOS ko mic allow karo.",false)};
-  rec.onend=async()=>{setJ("");const t=heard.trim();if(!t||!backend)return;voiceTurn=true;await jarvisTurn(t);window.scrollTo(0,document.body.scrollHeight)};
-  rec.start();
-}
-const SUGGEST=["Aaj kya karna hai?","Agle 30 din mein kya aa raha hai?","Is mahine kitna kharcha hua?","Mere baare mein kya jaante ho?"];
-const suggestChips=()=>`<div class="acts">${SUGGEST.map(q=>`<button class="ex" data-ask="${esc(q)}">${esc(q)}</button>`).join("")}</div>`;
-const bubble=m=>m.who==="img"?`<div class="msg img"><img src="${m.src}" alt="Photo you sent"></div>`:
-  `<div class="msg ${m.who}">${esc(m.text)}${m.q?`<button class="linkbtn" style="display:block;margin-top:6px;padding:0" data-askclaude="${esc(m.q)}">🧠 Claude se poora jawab ↗</button>`:""}</div>`;
-function vAskClaude(){
-  const pr=pasteResult, pv=pr?(pr.context||pr.adds.length||pr.dones.length||(pr.learn||[]).length||(pr.forget||[]).length?`<div class="setup"><b>${pr.context?"New life context":"From Claude"}</b><div class="pv">
-      ${pr.context?`<div style="white-space:pre-wrap">${esc(pr.context)}</div>`:""}
-      ${pr.adds.map(t=>`<div>＋ ${esc(t)}</div>`).join("")}${pr.dones.map(id=>`<div>✓ done: ${esc(items.get(id).text)}</div>`).join("")}
-      ${(pr.learn||[]).map(t=>`<div>🧠 learn: ${esc(t)}</div>`).join("")}${(pr.forget||[]).map(t=>`<div>🧹 forget: ${esc(t)}</div>`).join("")}</div>
+function vJarvis(){
+  const pr=pasteResult;
+  return `<div class="setup"><b>🧠 Jarvis lives in Claude</b><span class="covers">Pucho yahan, jawab Claude mein. Jo date wali cheez wo bataye, uski LIFEOS lines yahan paste karo: time pe yaad main dilaunga.</span>
+    <form id="askform" class="acts" autocomplete="off" style="display:grid;gap:8px"><input id="aq" placeholder="Jarvis se pucho…" aria-label="Ask Jarvis"><button class="go" type="submit" style="padding:12px">Ask Jarvis ↗</button></form></div>
+    <form class="setup" id="pasteform"><b>Paste from Jarvis</b><textarea id="paste" rows="4" placeholder="LIFEOS\n+ dentist 3 Dec 10am\ndone #12"></textarea>
+      <div class="acts"><button class="linkbtn" type="button" data-pasteback="1">📋 Paste clipboard</button><button class="go" type="submit" style="padding:10px 14px">Check</button></div></form>
+    ${pr?(pr.adds.length||pr.dones.length?`<div class="setup"><b>From Jarvis</b><div class="pv">${pr.adds.map(t=>`<div>＋ ${esc(t)}</div>`).join("")}${pr.dones.map(id=>`<div>✓ done: ${esc(items.get(id).text)}</div>`).join("")}</div>
       <div class="acts"><button class="go" style="padding:10px 14px" data-paste="apply">Save all</button><button class="linkbtn" data-paste="cancel">Cancel</button></div></div>`
-    :`<div class="setup"><b>Nothing to save found.</b><span class="covers">Paste the part of Claude's reply that starts with LIFEOS.</span><button class="linkbtn" data-paste="cancel">OK</button></div>`):"";
-  return `${jarvisHero(`● free · ${items.size} cheezein yaad · <button class="linkbtn" data-chat="settings" style="padding:0;font:inherit">⚡ app ke andar AI</button>`,
-    `<button class="linkbtn" data-chat="settings" aria-label="Jarvis settings">⚙︎</button>`)}
-    <div class="chat"><div class="msg bot">${esc(briefingText())}
-Kuch bhi bolo ya pucho: orb dabao ya neeche likho.</div>
-    ${chatLog.map(bubble).join("")}${chatLog.length?"":suggestChips()}
-    <div class="acts"><button class="ex" data-teach aria-expanded="${showTeach}">🧠 My life (${(settings.lifeContext||"").trim()?(settings.lifeContext.trim().split("\n").filter(l=>l.trim()&&!l.startsWith("#")).length+" facts"):"teach Jarvis"})</button><button class="ex" data-daily="1">☀️ Daily update${dailyDue(todayDate())?"":" ✓"}</button><button class="ex" data-memimport>📥 Import what Claude knows about me</button><button class="ex" data-project aria-expanded="${showProject}">📁 Claude Project setup</button>${askedQ||pasteResult?"":`<button class="ex" data-showpaste>📋 Paste Claude's reply</button>`}</div>
-    ${showTeach?teachPanel():""}
-    ${showProject?`<div class="setup"><b>LifeOS inside a Claude Project</b>
-      <span class="covers">Every chat in the project will know your list and your files. One-time setup, about 2 minutes:</span>
-      <ol style="margin:0;padding-left:20px;display:grid;gap:6px"><li>Open claude.ai → <b>Projects</b> → <b>New project</b> → name it “LifeOS”.</li>
-      <li>Tap <b>Copy instructions</b> below and paste them into the project's <b>Instructions</b>.</li>
-      <li>Tap <b>Back up now</b> and upload the file to the project's <b>Files</b>. Add any letters or bills you want Claude to read. Upload a fresh backup now and then.</li>
-      <li>Ask Claude anything inside that project, then paste its LIFEOS lines here.</li></ol>
-      <div class="acts"><button class="go" style="padding:10px 14px" data-copyinstr>Copy instructions</button><button class="linkbtn" data-data="backup">Back up now</button>
-      <a class="linkbtn" href="https://claude.ai/projects" target="_blank" rel="noopener" style="text-decoration:none;font-weight:700">Open Claude Projects ↗</a></div></div>`:""}
-    ${askedQ?`<div class="msg me">${esc(askedQ)}</div><div class="msg act">↗ sent to Claude · waiting for your paste</div>`:""}</div>
-    ${askedQ||pasteResult||showPaste?`<form class="setup" id="pasteform"><b>Step 2: Claude ka reply paste karo</b><span class="covers">Claude ke reply ke end mein LIFEOS wali lines copy karke yahan paste karo.</span><textarea id="paste" rows="4" placeholder="Yahan paste karo…"></textarea>
-      <div class="acts"><button class="linkbtn" type="button" data-readclip>📋 Paste clipboard</button><button class="go" type="submit" style="padding:10px 14px">Check</button></div></form>`:""}
-    ${pv}
-    <form class="dock" id="askform" autocomplete="off"><input id="aq" placeholder="Kuch bhi bolo ya pucho…" aria-label="Tell or ask Jarvis"><button class="db" type="button" data-chatcam aria-label="Send a photo">📷</button><button class="db go" type="submit" aria-label="Ask Claude">↑</button></form>`;
+      :`<div class="setup"><b>Nothing to save found.</b><span class="covers">Copy the part that starts with LIFEOS.</span><button class="linkbtn" data-paste="cancel">OK</button></div>`):""}`;
 }
 
-/* ---------- camera: barcode / QR → note or link, other photos → Jarvis ---------- */
-let scanned=null;
-async function shrink(file,max=1568){ // downscale before decoding/sending: fewer tokens, faster
-  const bmp=await createImageBitmap(file), k=Math.min(1,max/Math.max(bmp.width,bmp.height));
-  const c=document.createElement("canvas"); c.width=Math.round(bmp.width*k); c.height=Math.round(bmp.height*k);
-  c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);
-  const url=c.toDataURL("image/jpeg",0.85); return {bmp,url,b64:url.split(",")[1]};
-}
-async function readCodes(bmp){
-  if(!("BarcodeDetector" in window))return [];
-  try{const formats=await BarcodeDetector.getSupportedFormats();return await new BarcodeDetector({formats}).detect(bmp)}catch(e){return []}
-}
-function scanCard(){
-  const x=scanned; if(!x)return "";
-  const isUrl=/^https?:\/\//i.test(x.text);
-  return `<div class="scan"><b>${x.kind==="qr"?"QR code":"Barcode"}</b><div style="overflow-wrap:anywhere">${isUrl?`<a href="${esc(x.text)}" target="_blank" rel="noopener">${esc(x.text)} ↗</a>`:esc(x.text)}</div>
-    <div class="acts"><button class="go" style="padding:10px 14px" data-scan="save">Save as note</button><button class="linkbtn" data-scan="close">Close</button></div></div>`;
-}
-function showScan(){const box=document.getElementById("answer");box.innerHTML=scanCard();box.hidden=!scanned}
-async function onPhoto(file){
-  if(!file)return;
-  toast("Reading photo…",false);
-  let img; try{img=await shrink(file)}catch(e){toast("Couldn't open that photo.",false);return}
-  const codes=await readCodes(img.bmp);
-  const other=codes[0];
-  if(other){scanned={kind:other.format==="qr_code"?"qr":"code",text:other.rawValue};document.getElementById("toast").hidden=true;showScan();return}
-  if(CHAT_OK&&settings.key){document.getElementById("toast").hidden=true;view="jarvis";render();
-    askJarvis("What's in this photo? Save anything I need to act on (expiry or renewal dates, bills and due dates). Don't copy any ID or account numbers.",img);return}
-  toast(("BarcodeDetector" in window)?"No barcode found. Set up Jarvis (Jarvis tab) to read photos.":"Scanning needs Chrome on Android. Set up Jarvis to read photos.",false);
-}
-document.getElementById("cambtn").addEventListener("click",()=>document.getElementById("cam").click());
-document.getElementById("cam").addEventListener("change",e=>{onPhoto(e.target.files[0]);e.target.value=""});
 document.getElementById("restoreFile").addEventListener("change",async e=>{
   const f=e.target.files[0]; e.target.value=""; if(!f)return;
   try{const d=JSON.parse(await f.text());
@@ -1122,7 +770,7 @@ function importNudge(all){
 }
 function render(){
   const all=[...items.values()], today=todayDate();
-  backupNudge(today); importNudge(all); dailyNudge(today); pasteNudge();
+  backupNudge(today); importNudge(all); pasteNudge();
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.v===view));
   document.body.dataset.view=view;
   const dn=new Date(); document.getElementById("today").textContent=`${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][dn.getDay()]} · ${dn.getDate()} ${MON_SHORT[dn.getMonth()]}`;
@@ -1144,7 +792,7 @@ function toast(msg,canUndo=true){
 }
 function showAnswer(q){
   const today=todayDate(), best=answer(q,[...items.values()],today), box=document.getElementById("answer");
-  const ask=`<button class="linkbtn" data-askclaude="${esc(q)}" style="justify-self:start">Ask Claude about this ↗</button>`;
+  const ask=`<button class="linkbtn" data-askclaude="${esc(q)}" style="justify-self:start">Ask Jarvis ↗</button>`;
   if(!best.length)box.innerHTML=`<div class="answer"><span class="label">Answer</span><div class="main">Nothing in your journal matches that yet.</div>${ask}</div>`;
   else{const t=best[0];box.innerHTML=`<div class="answer"><span class="label">Answer</span><div class="main">${esc(t.text)}${t.due?` · ${rel(daysLeft(t,today))}`:""}</div>${t.due?`<div class="when">${esc(t.due.replace("T"," "))}</div>`:""}${ask}</div>`+(best.length>1?`<section><h2>Related</h2>${list(best.slice(1),today)}</section>`:"")}
   box.hidden=false;
@@ -1153,14 +801,11 @@ function showAnswer(q){
 document.getElementById("cap").addEventListener("submit",async e=>{
   e.preventDefault(); const inp=document.getElementById("q"), text=inp.value.trim(); if(!text||!backend)return;
   inp.value="";
-  if(window.ENT_ROUTE&&ENT_ROUTE(text)){document.getElementById("answer").hidden=true;return}
-  if(view==="now"&&!/^\w+\s*:/.test(text)&&isQuestion(text)){document.getElementById("answer").hidden=true;view="jarvis";render();await jarvisTurn(text);return}
-  if(text.endsWith("?")&&!/^\w+\s*:/.test(text)){
-    if(CHAT_OK&&settings.key){view="jarvis";document.getElementById("answer").hidden=true;askJarvis(text)}else showAnswer(text)}
+  if(!/^\w+\s*:/.test(text)&&isQuestion(text))showAnswer(text); // answer from the list; "Ask Jarvis ↗" for more
   else{document.getElementById("answer").hidden=true;await capture(text)}
 });
 document.getElementById("sheet").addEventListener("click",e=>{if(e.target.id==="sheet")e.target.hidden=true});
-for(const v of ["now","cases","money","benefits"])document.getElementById("tab-"+v).hidden=!EXTRA_VIEWS[v];
+for(const v of ["now","money"])document.getElementById("tab-"+v).hidden=!EXTRA_VIEWS[v];
 // Modules with a `menu:{icon,title,sub}` get a ⋯ menu entry automatically (inserted before "Me").
 for(const [v,x] of Object.entries(EXTRA_VIEWS))if(x.menu&&!document.getElementById("tab-"+v)){
   const b=document.createElement("button");Object.assign(b,{id:"tab-"+v,type:"button"});b.dataset.v=v;b.setAttribute("role","menuitem");
@@ -1172,29 +817,12 @@ document.addEventListener("click",async e=>{
   if(b.id==="more"){const sh=document.getElementById("sheet");sh.hidden=!sh.hidden;b.setAttribute("aria-expanded",String(!sh.hidden));return}
   if(b.hasAttribute("data-later")){showLater=!showLater;render();return}
   if(b.dataset.v){document.getElementById("sheet").hidden=true;const v=b.dataset.v==="home"?HOME:b.dataset.v;if(view!==v)window.scrollTo(0,0);view=v;try{localStorage.setItem("lifeos.view",view)}catch(_){}render();return}
-  if(b.hasAttribute("data-chatcam")){document.getElementById("cam").click();return}
   if(b.dataset.fill){const q=document.getElementById("q");q.value=b.dataset.fill;q.focus();return}
   if(b.dataset.guide){const id=+b.dataset.guide;openGuides.has(id)?openGuides.delete(id):openGuides.add(id);render();return}
-  if(b.dataset.chat==="new"){chatMsgs=[];chatLog=[];turnStart=-1;turnExtra=null;render();return}
-  if(b.hasAttribute("data-memimport")){askClaude("🧠 Import what Claude knows about me",memoryPrompt());return}
-  if(b.hasAttribute("data-showpaste")){showPaste=true;render();document.getElementById("paste").focus();return}
-  if(b.hasAttribute("data-project")){showProject=!showProject;render();return}
-  if(b.hasAttribute("data-teach")){showTeach=!showTeach;teachDraft=null;render();return}
-  if(b.dataset.daily){runDaily();return}
-  if(b.dataset.ask){await jarvisTurn(b.dataset.ask);return}
-  if(b.hasAttribute("data-talk")){if(jstate==="speaking"){speechSynthesis.cancel();setJ("");return}if(!chatBusy)listen();return}
-  if(b.hasAttribute("data-brief")){speak(briefingText());return}
-  if(b.dataset.askclaude){askClaude(b.dataset.askclaude);return}
   if(b.dataset.pasteback){await pasteFromClipboard();return}
   if(b.dataset.batchdel){await deleteBatch(b.dataset.batchdel);return}
   if(b.dataset.batchkeep){(settings.keptBatches=settings.keptBatches||[]).push(b.dataset.batchkeep);saveSettings();render();return}
-  if(b.hasAttribute("data-teachpaste")){try{const t=await navigator.clipboard.readText();if(t&&t.trim()){teachDraft=t.trim().slice(0,CTX_MAX);render();toast("Paste ho gaya · Save dabao",false)}}catch(_){toast("Box mein long-press karke Paste karo",false)}return}
-  if(b.hasAttribute("data-teachsave")){settings.lifeContext=document.getElementById("ctx").value.replace(/\b\d{6,}\b/g,"").trim().slice(0,CTX_MAX);teachDraft=null;saveSettings();render();toast("🧠 Jarvis ne yaad kar liya",false);return}
-  if(b.hasAttribute("data-teachrefresh")){const t=document.getElementById("ctx");if(t){settings.lifeContext=t.value.trim().slice(0,CTX_MAX);saveSettings()}askClaude("🧠 Update my life context",refreshPrompt());return}
-  if(b.hasAttribute("data-copyinstr")){try{await navigator.clipboard.writeText(PROJECT_INSTRUCTIONS+(aboutMe()?"\n\n"+aboutMe():""));toast("Instructions copied ✓ Paste them in the project.",false)}catch(_){toast("Couldn't copy. Long-press to copy from docs instead.",false)}return}
-  if(b.dataset.chat==="nokey"){settings.key="";delete settings.editing;saveSettings();render();return}
   if(b.dataset.askclaude!==undefined){document.getElementById("answer").hidden=true;askClaude(b.dataset.askclaude);return}
-  if(b.hasAttribute("data-readclip")){try{const t=await navigator.clipboard.readText();if(isOurPrompt(t)){toast("Ye apna sawal hai. Claude ka reply copy karo, phir Paste.",false);return}document.getElementById("paste").value=t}catch(_){toast("Long-press the box and tap Paste.",false)}return}
   if(b.dataset.paste==="cancel"){pasteResult=null;render();return}
   if(b.dataset.paste==="apply"&&backend){await applyPaste();return}
   if(b.dataset.data==="backup"){backupNow();return}
@@ -1202,10 +830,6 @@ document.addEventListener("click",async e=>{
   if(b.dataset.data==="restore"){document.getElementById("restoreFile").click();return}
   if(b.dataset.data==="restore-no"){pendingRestore=null;render();return}
   if(b.dataset.data==="restore-yes"&&backend){await applyRestore();return}
-  if(b.dataset.scan){const x=scanned; scanned=null; showScan();
-    if(b.dataset.scan==="save"&&x&&backend)await capture(`${x.kind==="qr"?"QR":"barcode"}: ${x.text}`);
-    return}
-  if(b.dataset.chat==="settings"){settings.editing=true;render();return}
   if(!backend)return;
   if(false){}
   else if(b.dataset.done)await finish(+b.dataset.done,b.closest(".card,.srow"));
@@ -1216,18 +840,11 @@ document.addEventListener("click",async e=>{
   else if(b.id==="toastUndo"){document.getElementById("toast").hidden=true;await undo()}
 });
 document.addEventListener("submit",async e=>{
-  if(e.target.id==="setup"){e.preventDefault();settings.name=document.getElementById("sname").value.trim();
-    const key=document.getElementById("skey").value.trim(), btn=e.target.querySelector("button[type=submit]");
-    if(key&&key!==settings.key){btn.disabled=true;btn.textContent="Check kar raha hoon…";const ok=await checkKey(key);btn.disabled=false;btn.textContent="Save";
-      if(ok===false){toast("Ye key nahi chali. Dobara copy karke paste karo.",false);return}
-      toast(ok?"✓ Jarvis ab app ke andar jawab dega":"Save kiya. Internet aane pe check hoga.",false)}
-    settings.key=key;delete settings.editing;saveSettings();render()}
   if(e.target.id==="prefs"){e.preventDefault();settings.name=document.getElementById("pname").value.trim();
     settings.voiceLang=document.getElementById("plang").value;
-    settings.myWords=document.getElementById("pwords").value.trim();settings.dailyOn=document.getElementById("pdaily").checked;settings.voiceReply=document.getElementById("pvoice").checked;saveSettings();const n=await remapMine();render();toast(n?`Saved · ${n} item${n>1?"s":""} moved`:"Settings saved",false)}
-  if(e.target.id==="askform"){e.preventDefault();const i=document.getElementById("aq"),t=i.value.trim();if(t&&backend){i.value="";await jarvisFree(t)}}
+    settings.myWords=document.getElementById("pwords").value.trim();saveSettings();const n=await remapMine();render();toast(n?`Saved · ${n} item${n>1?"s":""} moved`:"Settings saved",false)}
+  if(e.target.id==="askform"){e.preventDefault();const i=document.getElementById("aq"),t=i.value.trim();if(t){i.value="";askClaude(t)}}
   if(e.target.id==="pasteform"){e.preventDefault();pasteResult=parseClaude(document.getElementById("paste").value);render()}
-  if(e.target.id==="chatform"){e.preventDefault();const i=document.getElementById("cq"),t=i.value.trim();if(t&&backend){i.value="";askJarvis(t)}}
 });
 (()=>{ // voice capture (Chrome on Android/desktop)
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition, mic=document.getElementById("mic");
@@ -1252,13 +869,6 @@ if(shared||launch.has("v"))history.replaceState(null,"",location.pathname);
 render();
 if(window.claude&&claude.use)connect();else{backend=localBackend;backend.load();note(backend.label);render()}
 hook("boot");
-// A "#ctx=<base64url>" link loads a life context for review (the fragment never reaches the server; nothing saves until Save).
-function loadCtxLink(){if(!location.hash.startsWith("#ctx="))return;
-  try{const b=atob(location.hash.slice(5).replace(/-/g,"+").replace(/_/g,"/"));
-    teachDraft=new TextDecoder().decode(Uint8Array.from(b,c=>c.charCodeAt(0))).slice(0,CTX_MAX);view="jarvis";showTeach=true;
-    render();toast("🧠 Life context mila · check karo aur Save dabao",false)}catch(e){}
-  history.replaceState(null,"",location.pathname)}
-loadCtxLink(); window.addEventListener("hashchange",loadCtxLink);
 if(sharedText){view=HOME;render();const q=document.getElementById("q");q.value=sharedText;q.focus();toast("Shared ✓ · date add karo aur ↑ dabao",false)}
 </script>
 
