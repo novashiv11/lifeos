@@ -1,0 +1,38 @@
+# Decisions (ADR log — one line each, newest last)
+
+- 2026-10-14 · Start in `Project-1` repo as temp home; migrate to dedicated repo after v0.2.
+- 2026-10-14 · Python stdlib only, CLI-first. UI comes after the data model proves itself.
+- 2026-10-14 · Storage = append-only JSONL in `$LIFEOS_HOME` (easy to diff, back up, migrate to SQLite later).
+- 2026-10-14 · Rule-based parser first (offline, free, testable); LLM is a fallback, not the core.
+- 2026-10-14 · Recurring items are one item whose `due` advances (op `advance`), not N copies. Catch-up skips missed past cycles.
+- 2026-10-14 · Bare commands (`today`, `dog`, `review`) only when typed alone, so "today I felt…" is captured as a note.
+- 2026-10-14 · `domain:` prefix overrides auto-classification (user intent beats keywords).
+- 2026-10-14 · Undo is an `undo` op cancelling the latest effective record (stack), keeping the file append-only.
+- 2026-10-14 · Input ending in `?` is a question unless it has a `domain:` prefix. "kal" = tomorrow (plans > past).
+- 2026-10-14 · Web UI is a thin shell over the CLI (one text box = `life <text>`), so every feature lands in both for free.
+- 2026-10-14 · `serve` on a non-localhost host always requires a random token; request logs are silenced (journal text stays out of logs).
+- 2026-10-14 · Hosted UI = claude.ai artifact (works on phone, no server). Python CLI stays the reference implementation.
+- 2026-10-14 · **Reversed:** the LLM is the core of the chat; the rule parser is the fast path, pre-parse hint and offline fallback. (Founder wants chat.)
+- 2026-10-14 · Primary channel = Telegram bot (free, proactive OK). WhatsApp deferred (Meta's Jan 2026 ban on general AI bots + template fees).
+- 2026-10-14 · Wedge = dog care + document expiries. Store expiry dates only, never document numbers.
+- 2026-10-14 · Process: no build without founder's "haan"; updates ≤5 lines Hinglish.
+- 2026-10-14 · Founder: no Telegram. Channel = WhatsApp (focused utility, not general AI bot) or own app. Pending decision.
+- 2026-10-14 · Life areas are data (`lifeos/life.json`), injected into the web app at build time; a node parity test keeps the JS parser identical.
+- 2026-10-14 · Founder is in Ireland: market = Ireland/EU (EUR pricing, GDPR), not India. Monetisation options: Play Store €1–2/mo vs B2B. Pending.
+- 2026-10-14 · Founder wants a real phone app: ship as PWA on GitHub Pages first, wrap for Play Store (TWA) later. claude.ai artifact is no longer the main surface.
+- 2026-10-14 · **Picked (founder delegated): A = life-admin app for non-EU immigrants in Ireland**, Play Store, free + €1.99/mo. Evidence: ~654k non-EU nationals (Eurostat 1 Jan 2024); IRP renewal opens 12 weeks before expiry and processing now exceeds 17 weeks (irishimmigration.ie, Jul 2026) → missed timing is costly; closest rival odo.ie covers car admin only (€4/mo family tier), nobody does IRP + life admin. B2B (universities, relocation firms) after traction.
+- 2026-10-15 · Jarvis chat = direct browser call to the Claude API with the user's own key stored on the phone (no server). Raw fetch instead of the JS SDK to keep the app build-free. Haiku 5.5, effort low; history append-only (preserved-thinking safe), reset after 40 messages. Paid tier later moves this to a small server.
+- 2026-10-15 · Food/product data from Open Food Facts (free, no key, CORS). Barcode decoding via Chrome's BarcodeDetector (no library); other browsers fall back to Jarvis photo reading.
+- 2026-10-15 · Play Store via PWABuilder TWA (can't build Android here: dl.google.com blocked). Needs founder: Play Console ($25), user-site repo for assetlinks, 12 testers × 14 days closed test.
+- 2026-10-15 · UI v1.0: dark-first 'Jarvis home' (mockup A) + life wheel (B). Mockups kept in docs/mockups.
+- 2026-10-15 · Jarvis default = free handoff to the user's Claude app (claude.ai/new?q=) + paste-back of LIFEOS lines; API key optional. Embedding claude.ai or reusing a consumer subscription via API isn't possible/allowed.
+- 2026-10-15 · UI v1.1: simplicity first. Home is a single grouped list; secondary features live behind ⋯. Add features only when the founder asks.
+- 2026-10-16 · v2.0 UI = Orb home + Focus stack + Timeline + Money, as independent view modules (parallel agents; one file per module).
+- 2026-10-16: personal names → area mapping lives in phone settings (`myWords`), never in life.json/repo.
+- 2026-10-16: personal life context lives in phone settings (lifeContext) and is loaded via #ctx= fragment links; never in repo.
+- 2026-10-28: product = "ask anything about my life" Jarvis chat as home; other screens are secondary tools.
+- 2026-11-05: v4 typed records live in lifeos.v2 as a superset of classic items (old screens keep working); Python CLI frozen at v1.
+- 2026-11-08: product point = "Jarvis sorts your Irish life admin and gets you what you are owed"; home = one feed (chase → don't forget → claim, max 5) + money line. Replaces Jarvis-home / Today-home decisions.
+- 2026-11-10: docs/MASTER_PLAN.md is the plan of record; legacy screens (orb, stack, timeline, food, wheel, week, tax) get removed in P0.
+- 2026-11-12: personal use moves to a Claude Project ("Jarvis in Claude"); the PWA is parked. Reason: his real work happens in chat; app screens never matched it.
+- 2026-11-22: v5.0 app scope = reminders + capture + Jarvis bridge + money; Cases/Claim/AI chat removed (live in the Claude Project).
