@@ -66,3 +66,9 @@ Older entries: `log/ARCHIVE.md`.
 - Founder: "use the new skills like a senior pro, ask what's relevant". Asked 4 questions (IG goal, first task, reply style, clips); answers: all 3 goals, rest "idk" → decided: ADHD-mode replies by default; IG work starts when clips arrive.
 - Jarvis Project instructions gained a MY SKILLS section (adhd-mode default, caveman, deal-finder, nova-reels, ig-reel→ig-caption→ig-human, ig-pack, content-engine, ponytail). File re-sent (private).
 - /review of v5.0 → fixed leftover daily notification and chase card; removed ~50 dead CSS rules. Red→green tests. 70 tests OK; browser verify clean. Deployed.
+
+## Session 32 (2026-11-23): source moved to novashiv11/lifeos (dev), CI + auto-deploy
+- Founder: "create branch etc, you're senior pro" → "Next". Project-1 `main` is ToolNest (unrelated), so LifeOS gets its own home.
+- `novashiv11/lifeos`: new branch `dev` = source snapshot of Project-1@f389876 (history NOT copied: old commits had personal details). `main` stays the built site; Pages settings unchanged.
+- `.github/workflows/ci.yml`: tests on every push/PR (dev, feat/*); push to dev with green tests → build → publish to `main`.
+- This Project-1 branch is now history only. Work in lifeos@dev; one change per `feat/*` → PR → CI → merge.
