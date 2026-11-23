@@ -72,3 +72,7 @@ Older entries: `log/ARCHIVE.md`.
 - `novashiv11/lifeos`: new branch `dev` = source snapshot of Project-1@f389876 (history NOT copied: old commits had personal details). `main` stays the built site; Pages settings unchanged.
 - `.github/workflows/ci.yml`: tests on every push/PR (dev, feat/*); push to dev with green tests → build → publish to `main`.
 - This Project-1 branch is now history only. Work in lifeos@dev; one change per `feat/*` → PR → CI → merge.
+
+## Session 33 (2026-11-23): first offload skill — irish-dispute
+- Disputes are his most repeated life-admin task, so the first offload skill is `skills/irish-dispute/SKILL.md`: facts → what the law gives (CRA 2022: 30-day reject, repair/replace then refund, 12-month presumption, 6-year limit; 14-day online cooling-off) → 4-rung ladder (seller → formal complaint → ECC/CCPC/chargeback → Small Claims €2,000/€25) → draft + case card + LIFEOS chase line (5 working days).
+- Facts from web-search extracts of ccpc.ie / courts.ie / eccireland.ie (pages blocked here); unconfirmed points are marked in the skill. Generic: no personal data. Founder uploads the zip in claude.ai → Skills.
