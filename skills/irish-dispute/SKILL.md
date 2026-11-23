@@ -20,9 +20,9 @@ Say these plainly, add the source link, and say "check your terms" where it depe
 - **After 30 days:** repair or replacement first. A price reduction or refund comes in if the fault is serious or the repair fails. Source: ccpc.ie faulty-goods FAQs
 - **Fault appears within 12 months:** presumed to have been there at delivery. The trader must prove otherwise.
 - **Time limit:** claims up to 6 years from getting the goods.
-- **Online / distance purchase, just changed their mind:** 14 days from delivery to cancel, then 14 days to send it back. He pays return postage unless the item is faulty. The trader refunds within 14 days of being told, but can wait until the goods come back. Source: ccpc.ie/consumers/shopping/buying-online/
+- **Online / distance purchase, just changed their mind:** 14 days from delivery to cancel, then 14 days to send it back. The buyer pays return postage unless the item is faulty. The trader refunds within 14 days of being told, but can wait until the goods come back. Source: ccpc.ie/consumers/shopping/buying-online/
 - **Services (tradespeople):** the work must be done with the needed skill and reasonable care. If it isn't, ask them to put it right first. A price reduction or refund applies if the problem is serious, isn't fixed in reasonable time, or earlier fixes failed. Refunds are due within 14 days.
-- **Product recall:** follow the recall notice. He is entitled to a refund or replacement. Ask the seller first, and the manufacturer if the recall notice says to. (Who must provide it is not confirmed: say so if it matters.)
+- **Product recall:** follow the recall notice. The buyer is entitled to a refund or replacement. Ask the seller first, and the manufacturer if the recall notice says to. (Who must provide it is not confirmed: say so if it matters.)
 - Anything not listed here: say "not sure, check ccpc.ie" and never invent a rule or a deadline.
 
 ## 3. The ladder (one step at a time)
