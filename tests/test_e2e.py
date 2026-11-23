@@ -43,8 +43,15 @@ class PhoneBase(unittest.TestCase):
     def setUpClass(cls):
         import os
         cls.dist = tempfile.mkdtemp(prefix="lifeos-dist-")
-        subprocess.run([sys.executable, str(ROOT / "scripts/build_pwa.py")], check=True, capture_output=True,
-                       env={**os.environ, "LIFEOS_DIST": cls.dist})
+        # The build rasterises icons in Chromium; a rare CI launch hiccup gets one retry, and any failure shows its real error.
+        for attempt in (1, 2):
+            r = subprocess.run([sys.executable, str(ROOT / "scripts/build_pwa.py")], capture_output=True, text=True,
+                               env={**os.environ, "LIFEOS_DIST": cls.dist})
+            if r.returncode == 0:
+                break
+            print(f"build_pwa.py failed (attempt {attempt}):\n{r.stderr[-3000:]}", file=sys.stderr)
+        else:
+            raise RuntimeError("build_pwa.py failed twice; see stderr above")
         cls.srv = ThreadingHTTPServer(("127.0.0.1", 0), partial(Quiet, directory=cls.dist))
         threading.Thread(target=cls.srv.serve_forever, daemon=True).start()
         cls.url = f"http://127.0.0.1:{cls.srv.server_port}/"
