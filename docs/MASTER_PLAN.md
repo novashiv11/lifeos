@@ -53,7 +53,7 @@ Each row lists what Jarvis *does*, not what it stores. "Now" = exists, "Next" = 
 |---|---|---|
 | P0 Clean and prove (1 session) | Remove orb, stack, timeline, food, life wheel, week review, old tax screen and their tests; archive old docs; founder runs the v4 upgrade and one Money import | Menu shows only Home, Money, Cases, Jarvis, Me; founder sends one screenshot of his real home feed |
 | P1 Doer MVP (1–2 sessions) | Profile, entitlements engine, PRSI dental + eye, providers, email drafts, yearly resets | Founder books one real appointment through the app |
-| P2 Money on real files (1 session) | Fix parsing on his Revolut and BOI files; recurring bills and jump alerts feed the home feed | His tie-out shows a €0 gap for one real month |
+| P2 Money on real files (1 session) | Fix parsing on real bank files; recurring bills and jump alerts feed the home feed | Tie-out shows a €0 gap for one real month |
 | P3 More to claim, less to type (2 sessions) | Med 1, tax credits, Bike to Work; "Draft next message" for cases; Jarvis JSON actions with confirm cards | Three entitlement cards and one case draft used for real |
 | P4 Play Store (2–3 sessions + founder steps) | TWA package, first-run onboarding, reliable notifications, small server for Jarvis without a key, billing | Closed test with 12 testers running |
 | P5 Later | Sync, multi-user, more counties, connectors | Paying users ask for it |
@@ -67,7 +67,7 @@ Each row lists what Jarvis *does*, not what it stores. "Now" = exists, "Next" = 
 - **Scope:** the category table is the whole map. Anything not in it waits until after P4.
 
 ## 7. Working cheaply (tokens)
-- Each session reads only: CLAUDE.md → the last DEVLOG entry → the "Now" block of ROADMAP.md. Old log entries live in `log/ARCHIVE.md` and are not read.
+- Each session reads only: CLAUDE.md → the last DEVLOG entry → the "Now" block of ROADMAP.md. 
 - One roadmap item per session. Search the big file (`app/lifeos.html`) instead of reading it whole.
 - Run only the tests for the files touched while working; run the full suite once before deploying.
 - Agents only for work in separate files, with reports of 200 words or fewer. Screenshots only when the screen changed.

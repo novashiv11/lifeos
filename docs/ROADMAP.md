@@ -1,12 +1,14 @@
 # Roadmap
 
-Plan of record: `docs/MASTER_PLAN.md` (the point, categories, phases, rules). History: `log/ARCHIVE.md`.
+Plan of record: this file (2026-11-27). `docs/MASTER_PLAN.md` is the old app plan, kept for reference.
 
-## Now: Jarvis lives in Claude (2026-11-12)
-The founder wants what he already does in daily Claude chats, in one place with his context, not app screens. The PWA is parked (kept live, no new features).
-- [ ] Founder: create the "Jarvis" Project in the Claude app and paste the instructions file he was sent (private, not in this repo)
-- [ ] After a week of use: turn the most repeated task into a skill ("offload"); then a daily brief (needs his Gmail/Calendar connectors)
-- [ ] Only if he asks: resume the app items below
+## Now: offload via Jarvis, app frozen (2026-11-27)
+Review (product + critic + research): 34 sessions, ~7 home redesigns, no real use. Build only what he repeats.
+- [ ] Founder: Claude Project "Jarvis" set up with the private instructions; upload the `irish-dispute` skill zip
+- [ ] Founder: connect Google Calendar in claude.ai, so Jarvis puts reminders there (phone alerts are reliable; the PWA's are not)
+- [ ] Founder: make `novashiv11/Project-1` private, or delete its old `ccr-*` and `claude/toolnest-polish` branches (old commits hold personal details)
+- [ ] Each week: count closed loops; turn the most repeated chat task into the next skill (candidates: PRSI dental/eye claim, renewals)
+- [ ] App: frozen as "Yaad" (v6). Play Store plan dropped until one skill recovers real euros.
 
 ## Done: v5.0 app = Jarvis pocket (reminders, capture, bridge, money), see docs/PONYTAIL_REVIEW.md
 

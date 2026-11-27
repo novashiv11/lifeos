@@ -1,6 +1,6 @@
 # Dev Log (append one entry per session, newest at bottom)
 
-Older entries: `log/ARCHIVE.md`.
+Older entries were removed (privacy); see git history of Project-1 if ever needed.
 
 ## Session 22 (2026-11-05): v4.0 Phase 1 — typed records, Cases, Today
 - Founder wrote a full refactor spec; plan in docs/REFACTOR_PLAN.md, approved ("Next").
@@ -30,7 +30,7 @@ Older entries: `log/ARCHIVE.md`.
 - Founder asked for a full review and a plan for the "perfect life assistant", token-optimised.
 - docs/MASTER_PLAN.md: honest review (6 home pivots, 0 real-data validation, ~1,100 legacy lines), fixed point, category map, product rules, P0–P5 with exit criteria, risks, token rules.
 - ROADMAP rewritten (Now = P0 clean and prove). CLAUDE.md rewritten for the new point, map and cheaper sessions.
-- DEVLOG trimmed to 3 entries (24 moved to log/ARCHIVE.md); STRATEGY/VISION/LIFE_MAP moved to docs/archive/.
+- DEVLOG trimmed to 3 entries (24 moved to log/ARCHIVE.md); old strategy docs archived (since removed).
 
 ## Session 26 (2026-11-11): v4.2 P0 clean-up
 - Removed legacy screens and tests: orb, Focus stack, timeline, tax calendar (`finance.js`), food (incl. Open Food Facts lookup), life wheel, week review, weekly prompt. Camera now: barcode/QR → note, photo → Jarvis.
@@ -64,7 +64,7 @@ Older entries: `log/ARCHIVE.md`.
 
 ## Session 31 (2026-11-22): v5.1 senior review (agent-skills) + skill routing
 - Founder: "use the new skills like a senior pro, ask what's relevant". Asked 4 questions (IG goal, first task, reply style, clips); answers: all 3 goals, rest "idk" → decided: ADHD-mode replies by default; IG work starts when clips arrive.
-- Jarvis Project instructions gained a MY SKILLS section (adhd-mode default, caveman, deal-finder, nova-reels, ig-reel→ig-caption→ig-human, ig-pack, content-engine, ponytail). File re-sent (private).
+- Jarvis Project instructions gained a MY SKILLS section. File re-sent (private).
 - /review of v5.0 → fixed leftover daily notification and chase card; removed ~50 dead CSS rules. Red→green tests. 70 tests OK; browser verify clean. Deployed.
 
 ## Session 32 (2026-11-23): source moved to novashiv11/lifeos (dev), CI + auto-deploy
@@ -82,3 +82,9 @@ Older entries: `log/ARCHIVE.md`.
 - Home now does one job: "Likh do, time pe yaad dilaunga." Input "Kya yaad dilaun?" + example; list Late → Is hafte → Baad mein (first 5, "+N aur") → Bina date; ✓ per row; one "Jarvis se help lo ↗" button.
 - Deleted: 🌱 growth card, money one-liner on home (Money stays in ⋯), needs-info date card, 5-card cap. Notes/facts/projects never show as reminders.
 - Example text checked against the parser ("har mahine 1 ko" does not parse; hint uses "rent monthly 1st"). 68 tests OK.
+
+## Session 35 (2026-11-27): pro review → app frozen, privacy scrub
+- Founder: "think like a pro IT company, best path, is it public, remove my personal info". Product, critic and research agents (≤200 words each) agreed: stop building; Jarvis in Claude + Google Calendar for reminders; metric = closed loops/week; Play Store dropped for now.
+- Public check: `novashiv11/lifeos` and `Project-1` are both public with GitHub Pages. The GitHub username itself contains personal words (only the founder can rename).
+- Removed from the repo tree: `log/ARCHIVE.md`, `docs/archive/`, founder-specific lines (country, banks, skill names). CLAUDE.md cut to ~20 lines; code map → `docs/MAP.md`.
+- Still in old history (needs founder): Project-1 commits (name, email, a seller name) and the lifeos branch `feat/irish-dispute-skill` (first name). Deleting branches via API is blocked here.
