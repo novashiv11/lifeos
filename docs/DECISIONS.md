@@ -18,7 +18,7 @@
 - 2026-10-14 · Process: no build without founder's "haan"; updates ≤5 lines Hinglish.
 - 2026-10-14 · Founder: no Telegram. Channel = WhatsApp (focused utility, not general AI bot) or own app. Pending decision.
 - 2026-10-14 · Life areas are data (`lifeos/life.json`), injected into the web app at build time; a node parity test keeps the JS parser identical.
-- 2026-10-14 · Founder is in Ireland: market = Ireland/EU (EUR pricing, GDPR), not India. Monetisation options: Play Store €1–2/mo vs B2B. Pending.
+- 2026-10-14 · Market = Ireland/EU (EUR pricing, GDPR). Monetisation options: Play Store €1–2/mo vs B2B. Pending.
 - 2026-10-14 · Founder wants a real phone app: ship as PWA on GitHub Pages first, wrap for Play Store (TWA) later. claude.ai artifact is no longer the main surface.
 - 2026-10-14 · **Picked (founder delegated): A = life-admin app for non-EU immigrants in Ireland**, Play Store, free + €1.99/mo. Evidence: ~654k non-EU nationals (Eurostat 1 Jan 2024); IRP renewal opens 12 weeks before expiry and processing now exceeds 17 weeks (irishimmigration.ie, Jul 2026) → missed timing is costly; closest rival odo.ie covers car admin only (€4/mo family tier), nobody does IRP + life admin. B2B (universities, relocation firms) after traction.
 - 2026-10-15 · Jarvis chat = direct browser call to the Claude API with the user's own key stored on the phone (no server). Raw fetch instead of the JS SDK to keep the app build-free. Haiku 5.5, effort low; history append-only (preserved-thinking safe), reset after 40 messages. Paid tier later moves this to a small server.
@@ -37,3 +37,4 @@
 - 2026-11-12: personal use moves to a Claude Project ("Jarvis in Claude"); the PWA is parked. Reason: his real work happens in chat; app screens never matched it.
 - 2026-11-22: v5.0 app scope = reminders + capture + Jarvis bridge + money; Cases/Claim/AI chat removed (live in the Claude Project).
 - 2026-11-27: Home = one reminder list ("Yaad"); growth card and home money line deleted. Thinking/help lives in Jarvis (Claude).
+- 2026-11-27: App frozen; Play Store €1–2/mo plan dropped. Life admin = Jarvis (Claude Project + skills) + Google Calendar reminders. Metric: closed loops/week.

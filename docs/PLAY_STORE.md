@@ -13,7 +13,7 @@ This environment can't reach dl.google.com (Android SDK), so the package is buil
      and `assetlinks.json`.
 3. **Remove the browser bar:** Android only trusts the app if `https://novashiv11.github.io/.well-known/assetlinks.json` exists (site root).
    Create a public repo named exactly `novashiv11.github.io` and send Claude the `assetlinks.json`; Claude pushes it to
-   `.well-known/assetlinks.json` (with `.nojekyll`). Your other sites (`/lifeos/`, `/novas-pack/`) are unaffected.
+   `.well-known/assetlinks.json` (with `.nojekyll`). Other sites on the account are unaffected.
    With Play App Signing on, also add the SHA-256 from Play Console → *Setup → App signing* to that file.
 4. **Upload:** Play Console → *Create app* → *Testing → Closed testing* → upload the `.aab`.
    New personal accounts must run a **closed test with at least 12 testers for 14 days** before Google allows production.
