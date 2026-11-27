@@ -1,4 +1,4 @@
-"""v4 core: reviewed migration (classic → typed), soft delete + Trash + undo, Today shows max 5 ranked rows."""
+"""v4 core: reviewed migration (classic → typed), soft delete + Trash + undo, Home is tested in test_home_feed."""
 import json
 import unittest
 
@@ -54,7 +54,7 @@ class MigrationTest(PhoneBase):
         self.pg.wait_for_function("typeof items !== 'undefined' && backend && R2.migrated")
         self.assertEqual(self.pg.evaluate("items.size"), 5)
         self.pg.evaluate("view='now'; render(); 0")
-        self.assertIn("date kya hai", self.pg.inner_text("#view"))  # Today asks for the unknown date
+        self.assertIn("BINA DATE", self.pg.inner_text("#view"))  # unknown date stays visible on Home
 
     def test_upgrade_banner_on_today(self):
         self.load_v1()
@@ -82,30 +82,6 @@ class TrashAndTodayTest(PhoneBase):
         self.pg.reload()
         self.pg.wait_for_function("typeof items !== 'undefined' && backend && R2.migrated")
         self.assertEqual(self.pg.evaluate("R2.trash.size"), 0)
-
-    def test_today_max_five_ranked(self):
-        self.pg.evaluate("""(async()=>{const t=R2.todayIso();
-          for(let k=0;k<4;k++)await R2.create('task',{title:'late '+k,due_date:R2.addDays(t,-1-k)});
-          for(let k=0;k<3;k++)await R2.create('deadline',{title:'soon '+k,date:R2.addDays(t,2+k),date_known:true});
-          await R2.create('deadline',{title:'Residence card',date:null,date_known:false});
-          view='now'; render();})(); 0""")
-        self.pg.wait_for_function("items.size === 8")
-        self.pg.evaluate("view='now'; render(); 0")
-        rows = self.pg.eval_on_selector_all(".td-row, .td-q", "els => els.map(e => e.innerText)")
-        self.assertEqual(len(rows), 5)
-        self.assertTrue(all("late" in r for r in rows[:4]))
-        self.assertIn("soon 0", rows[4])
-        self.assertEqual(self.pg.evaluate("document.documentElement.scrollWidth"), 390)
-
-    def test_needs_info_question_sets_date(self):
-        self.pg.evaluate("R2.create('deadline',{title:'Residence card',date:null,date_known:false}); 0")
-        self.pg.wait_for_function("items.size === 1")
-        self.pg.evaluate("view='now'; render(); 0")
-        self.pg.fill("[data-td-date]", "2027-01-20")
-        self.pg.click("[data-td-setdate]")
-        self.pg.wait_for_function("[...items.values()][0].date_known === true")
-        self.assertEqual(self.pg.evaluate("[...items.values()][0].due"), "2027-01-20")
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -36,3 +36,4 @@
 - 2026-11-10: docs/MASTER_PLAN.md is the plan of record; legacy screens (orb, stack, timeline, food, wheel, week, tax) get removed in P0.
 - 2026-11-12: personal use moves to a Claude Project ("Jarvis in Claude"); the PWA is parked. Reason: his real work happens in chat; app screens never matched it.
 - 2026-11-22: v5.0 app scope = reminders + capture + Jarvis bridge + money; Cases/Claim/AI chat removed (live in the Claude Project).
+- 2026-11-27: Home = one reminder list ("Yaad"); growth card and home money line deleted. Thinking/help lives in Jarvis (Claude).

@@ -76,3 +76,9 @@ Older entries: `log/ARCHIVE.md`.
 ## Session 33 (2026-11-23): first offload skill — irish-dispute
 - Disputes are his most repeated life-admin task, so the first offload skill is `skills/irish-dispute/SKILL.md`: facts → what the law gives (CRA 2022: 30-day reject, repair/replace then refund, 12-month presumption, 6-year limit; 14-day online cooling-off) → 4-rung ladder (seller → formal complaint → ECC/CCPC/chargeback → Small Claims €2,000/€25) → draft + case card + LIFEOS chase line (5 working days).
 - Facts from web-search extracts of ccpc.ie / courts.ie / eccireland.ie (pages blocked here); unconfirmed points are marked in the skill. Generic: no personal data. Founder uploads the zip in claude.ai → Skills.
+
+## Session 34 (2026-11-27): v6 home = "Yaad" (founder: "I don't use it, I don't understand it")
+- Old home mixed 3 jobs (🌱 question, bank-file prompt, "ask anything" box) under an abstract tagline. Mockup sent first; founder waved off the question, so decided for him.
+- Home now does one job: "Likh do, time pe yaad dilaunga." Input "Kya yaad dilaun?" + example; list Late → Is hafte → Baad mein (first 5, "+N aur") → Bina date; ✓ per row; one "Jarvis se help lo ↗" button.
+- Deleted: 🌱 growth card, money one-liner on home (Money stays in ⋯), needs-info date card, 5-card cap. Notes/facts/projects never show as reminders.
+- Example text checked against the parser ("har mahine 1 ko" does not parse; hint uses "rent monthly 1st"). 68 tests OK.
